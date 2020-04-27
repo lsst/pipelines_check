@@ -26,7 +26,10 @@ fi
 
 # I dropped the masks/hsc and skymaps collections; apparently they weren't
 # needed for this graph so they weren't exported?
+# Also this will fail upon re-running, because it wants `--extend-run` if and
+# only if the output run already exists.
 pipetask run -d "visit=903342 AND detector=10" -j 1 -b DATA_REPO/butler.yaml \
     -i calib/hsc,raw/hsc,ref_cats,shared/ci_hsc \
     --register-dataset-types -p $PIPE_TASKS_DIR/pipelines/ProcessCcd.yaml \
-    --instrument lsst.obs.subaru.HyperSuprimeCam -o demo_collection
+    --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection 
+
