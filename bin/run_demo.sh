@@ -14,12 +14,18 @@ if [ ! -f DATA_REPO/butler.yaml ]; then
     makeButlerRepo.py DATA_REPO
 fi
 
-bin/ingestExternalData.py DATA_REPO $PWD/export_dir/export.yaml
+
+if [ ! -d DATA_REPO/calib ]; then
+    bin/ingestExternalData.py DATA_REPO $PWD/export_dir/export.yaml
+fi
 
 # ingestRaws.py doesn't search recursively; over-specifying to work around that.
-bin/ingestRaws.py DATA_REPO export_dir/raw/hsc/raw/r/HSC-R/903342/
+if [ -z "$(find -L DATA_REPO/raw -type f)" ]; then
+    bin/ingestRaws.py DATA_REPO export_dir/raw/hsc/raw/r/HSC-R/903342/
+fi
 
-# originally: -i calib/hsc,raw/hsc,masks/hsc,ref_cats,skymaps,shared/ci_hsc 
+# I dropped the masks/hsc and skymaps collections; apparently they weren't
+# needed for this graph so they weren't exported?
 pipetask run -d "visit=903342 AND detector=10" -j 1 -b DATA_REPO/butler.yaml \
     -i calib/hsc,raw/hsc,ref_cats,shared/ci_hsc \
     --register-dataset-types -p $PIPE_TASKS_DIR/pipelines/ProcessCcd.yaml \
