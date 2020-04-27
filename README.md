@@ -20,4 +20,6 @@ script `bin/rebuild_demo.sh`. The exported data is designed so that most demo
 users will not need to download the much larger `ci_hsc_gen3` package; the data
 in this demo package should be entirely self-contained.
 
+Currently, `rebuild_demo.sh` requires daf_butler branch
+`u/ctslater/export-copy`.
 
