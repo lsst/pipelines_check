@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DYLD_LIBRARY_PATH=${LSST_LIBRARY_PATH}
+
 # Exit on command failure
 set -e
 

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DYLD_LIBRARY_PATH=${LSST_LIBRARY_PATH}
+
 #Check that CI_HSC_GEN3_DIR exists, otherwise tell user to set it up.
 
 # Generate the graph corresponding to ProcessCCD on a single detector.
