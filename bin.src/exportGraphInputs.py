@@ -17,8 +17,9 @@ if __name__ == "__main__":
     with(open(args.graph, "rb")) as f:
         graph = pickle.load(f)
 
-    # dataset_types_to_save = ("brightObjectMask", "ps1_pv3_3pi_20170110", "jointcal_photoCalib",
-    #                          "jointcal_wcs", "bias", "dark", "flat", "sky", "raw",
+    # dataset_types_to_save = ("brightObjectMask", "ps1_pv3_3pi_20170110",
+    #                          "jointcal_photoCalib", "jointcal_wcs", "bias",
+    #                          "dark", "flat", "sky", "raw",
     #                          "camera", "bfKernel")
     dataset_types_to_exclude = ("raw", "postISRCCD", "icExp", "icExpBackground", "icSrc")
 
