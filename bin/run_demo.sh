@@ -19,7 +19,7 @@ fi
 
 # Hack assuming posix datastore
 if [ ! -d DATA_REPO/HSC/calib ]; then
-    butler import DATA_REPO $PWD/export_dir --export-file $PWD/export_dir/export.yaml --output-run shared/ci_hsc --skip-dimensions instrument,physical_filter,detector
+    butler import DATA_REPO "${PWD}/export_dir" --export-file "${PWD}/export_dir/export.yaml" --output-run shared/ci_hsc --skip-dimensions instrument,physical_filter,detector
 fi
 
 # ingestRaws.py doesn't search recursively; over-specifying to work around that.
@@ -34,5 +34,5 @@ fi
 # only if the output run already exists.
 pipetask run -d "exposure=903342 AND detector=10" -j 1 -b DATA_REPO/butler.yaml \
     -i HSC/calib,HSC/raw/all,ref_cats,shared/ci_hsc \
-    --register-dataset-types -p $PIPE_TASKS_DIR/pipelines/ProcessCcd.yaml \
+    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/ProcessCcd.yaml" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection
