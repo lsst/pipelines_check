@@ -1,3 +1,4 @@
 setupRequired(pipe_tasks)
 setupRequired(daf_butler)
 setupRequired(obs_subaru)
+setupRequired(ctrl_mpexec)
