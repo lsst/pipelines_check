@@ -28,10 +28,8 @@ if [ -z "$(find -L DATA_REPO/HSC/raw -type f)" ]; then
     butler define-visits DATA_REPO -i HSC --collections HSC/raw/all
 fi
 
-# I dropped the masks/hsc and skymaps collections; apparently they weren't
-# needed for this graph so they weren't exported?
-# Also this will fail upon re-running, because it wants `--extend-run` if and
-# only if the output run already exists.
+# Pipeline execution will fail on second attempt because the output run
+# can not be the same.
 pipetask run -d "exposure=903342 AND detector=10" -j 1 -b DATA_REPO/butler.yaml \
     -i HSC/calib,HSC/raw/all,ref_cats,shared/ci_hsc \
     --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/ProcessCcd.yaml" \
