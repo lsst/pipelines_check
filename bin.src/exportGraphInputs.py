@@ -9,7 +9,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Export all inputs required to execute a quantum graph.")
     parser.add_argument("butler", help="Directory or butler.yaml to export from")
     parser.add_argument("graph", help="Pickle file containing a quantum graph")
-    parser.add_argument("--output", default="export_dir", help="Directory to export to")
+    parser.add_argument("--output", default="staging", help="Directory to export to")
     args = parser.parse_args()
 
     butler = Butler(args.butler)
