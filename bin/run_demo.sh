@@ -19,12 +19,12 @@ fi
 
 # Hack assuming posix datastore
 if [ ! -d DATA_REPO/HSC/calib ]; then
-    butler import DATA_REPO "${PWD}/export_dir" --export-file "${PWD}/export_dir/export.yaml" --output-run shared/ci_hsc --skip-dimensions instrument,physical_filter,detector
+    butler import DATA_REPO "${PWD}/input_data" --export-file "${PWD}/input_data/export.yaml" --output-run shared/ci_hsc --skip-dimensions instrument,physical_filter,detector
 fi
 
 # ingestRaws.py doesn't search recursively; over-specifying to work around that.
 if [ -z "$(find -L DATA_REPO/HSC/raw -type f)" ]; then
-    butler ingest-raws DATA_REPO --dir export_dir/HSC/raw/all/raw/r/HSC-R/
+    butler ingest-raws DATA_REPO --dir input_data/HSC/raw/all/raw/r/HSC-R/
     butler define-visits DATA_REPO -i HSC --collections HSC/raw/all
 fi
 
