@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: 3.7
 
-      - name: Install
+      - name: Install flake8
         run: pip install -r <(curl https://raw.githubusercontent.com/lsst/linting/master/requirements.txt)
 
       - name: Run linter
