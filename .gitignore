@@ -1,0 +1,6 @@
+DATA_REPO/
+bin/*.py
+staging/junk.yaml
+*.swp
+.*dblite
+single_ccd_graph.pkl
