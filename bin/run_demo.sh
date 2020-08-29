@@ -44,7 +44,7 @@ fi
 
 # ingestRaws.py doesn't search recursively; over-specifying to work around that.
 if [ -z "$(find -L DATA_REPO/HSC/raw -type f)" ]; then
-    butler ingest-raws DATA_REPO --dir input_data/HSC/raw/all/raw/r/HSC-R/
+    butler ingest-raws DATA_REPO input_data/HSC/raw/all/raw/r/HSC-R/
     butler define-visits DATA_REPO -i HSC --collections HSC/raw/all
 fi
 
