@@ -4,3 +4,4 @@ staging/junk.yaml
 *.swp
 .*dblite
 single_ccd_graph.pkl
+_build.*
