@@ -50,7 +50,16 @@ fi
 
 # Pipeline execution will fail on second attempt because the output run
 # can not be the same.
-pipetask run -d "exposure=903342 AND detector=10" -j 1 -b DATA_REPO/butler.yaml \
+# Do not specify a number of processors (-j) to test that the default value
+# works.
+pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
     -i HSC/calib,HSC/raw/all,ref_cats,shared/ci_hsc \
     --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/ProcessCcd.yaml" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection
+
+# Do not provide a data query (-d) to verify code correctly handles an empty
+# query.
+pipetask qgraph -b DATA_REPO/butler.yaml \
+    --input HSC/calib,HSC/raw/all,ref_cats,shared/ci_hsc \
+    -p "${PIPE_TASKS_DIR}/pipelines/ProcessCcd.yaml" \
+    --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection_1
