@@ -21,6 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import pickle
 import argparse
 from lsst.daf.butler import Butler
@@ -44,6 +45,7 @@ if __name__ == "__main__":
     #                          "camera", "bfKernel")
     dataset_types_to_exclude = ("raw", "postISRCCD", "icExp", "icExpBackground", "icSrc")
 
+    os.makedirs(args.output, exist_ok=True)
     with butler.export(directory=args.output, format="yaml", transfer="auto") as export:
         items = []
         for graph_node in graph:
