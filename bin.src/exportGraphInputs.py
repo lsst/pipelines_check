@@ -60,6 +60,7 @@ if __name__ == "__main__":
                                                                       dataId=dataset.dataId))
                             items.extend(found)
         export.saveDatasets(items)
+        export.saveCollection("HSC/calib")
 
     # This is solely to export the raw files. We do not need the yaml
     with butler.export(directory=args.output, filename="junk.yaml", format="yaml", transfer="auto") as export:
