@@ -46,11 +46,11 @@ data:
   records:
   - instrument: HSC
     name: HSC-R
-    abstract_filter: r
+    band: r
 - type: dataset_type
   name: transmission_filter
   dimensions:
-  - abstract_filter
+  - band
   - instrument
   - calibration_label
   - physical_filter
@@ -211,7 +211,7 @@ data:
 - type: dataset_type
   name: flat
   dimensions:
-  - abstract_filter
+  - band
   - instrument
   - calibration_label
   - detector
