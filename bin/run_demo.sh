@@ -53,7 +53,7 @@ fi
 # Do not specify a number of processors (-j) to test that the default value
 # works.
 pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
-    -i HSC/calib,HSC/raw/all,refcats \
+    -i HSC/calib,HSC/raw/all,refcats --longlog \
     --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/ProcessCcd.yaml" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection
 
