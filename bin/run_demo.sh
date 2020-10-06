@@ -45,15 +45,15 @@ fi
 # ingestRaws.py doesn't search recursively; over-specifying to work around that.
 if [ -z "$(find -L DATA_REPO/HSC/raw -type f)" ]; then
     butler ingest-raws DATA_REPO input_data/HSC/raw/all/raw/r/HSC-R/
-    butler define-visits DATA_REPO -i HSC --collections HSC/raw/all
+    butler define-visits DATA_REPO HSC --collections HSC/raw/all
 fi
 
 # Pipeline execution will fail on second attempt because the output run
 # can not be the same.
 # Do not specify a number of processors (-j) to test that the default value
 # works.
-pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
-    -i HSC/calib,HSC/raw/all,refcats --longlog \
+pipetask --long-log run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
+    --input HSC/calib,HSC/raw/all,refcats \
     --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/ProcessCcd.yaml" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection
 
