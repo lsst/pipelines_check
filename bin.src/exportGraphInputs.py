@@ -48,27 +48,25 @@ if __name__ == "__main__":
     os.makedirs(args.output, exist_ok=True)
     with butler.export(directory=args.output, format="yaml", transfer="auto") as export:
         items = []
-        for graph_node in graph:
-            for quantum in graph_node.quanta:
-                for key, value in quantum.predictedInputs.items():
-                    for dataset in value:
-                        if dataset.datasetType.name not in dataset_types_to_exclude:
-                            # The quantum graph doesn't know the ID of the
-                            # real dataset so convert to a real ref
-                            found = set(butler.registry.queryDatasets(dataset.datasetType.name,
-                                                                      collections=...,
-                                                                      dataId=dataset.dataId))
-                            items.extend(found)
+        for quantum_node in graph:
+            for key, value in quantum_node.quantum.inputs.items():
+                for dataset in value:
+                    if dataset.datasetType.name not in dataset_types_to_exclude:
+                        # The quantum graph doesn't know the ID of the
+                        # real dataset so convert to a real ref
+                        found = set(butler.registry.queryDatasets(dataset.datasetType.name,
+                                                                  collections=...,
+                                                                  dataId=dataset.dataId))
+                        items.extend(found)
         export.saveDatasets(items)
         export.saveCollection("HSC/calib")
 
     # This is solely to export the raw files. We do not need the yaml
     with butler.export(directory=args.output, filename="junk.yaml", format="yaml", transfer="auto") as export:
         items = []
-        for graph_node in graph:
-            for quantum in graph_node.quanta:
-                for key, value in quantum.predictedInputs.items():
-                    for dataset in value:
-                        if dataset.datasetType.name in ("raw",):
-                            items.append(dataset)
+        for quantum_node in graph:
+            for key, value in quantum_node.quantum.inputs.items():
+                for dataset in value:
+                    if dataset.datasetType.name in ("raw",):
+                        items.append(dataset)
         export.saveDatasets(items)
