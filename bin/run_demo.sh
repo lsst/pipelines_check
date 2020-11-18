@@ -63,3 +63,13 @@ pipetask qgraph -b DATA_REPO/butler.yaml \
     --input HSC/calib,HSC/raw/all,refcats \
     -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml:processCcd" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection_1
+
+# Do a new shorter run using replace-run
+pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
+    --input HSC/calib,HSC/raw/all,refcats \
+    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml:isr" \
+    --instrument lsst.obs.subaru.HyperSuprimeCam --output demo_collection2
+
+pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
+    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml:isr" \
+    --instrument lsst.obs.subaru.HyperSuprimeCam --output demo_collection2 --replace-run
