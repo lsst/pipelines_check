@@ -54,22 +54,22 @@ fi
 # works.
 pipetask --long-log run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
     --input HSC/calib,HSC/raw/all,refcats \
-    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml:processCcd" \
+    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection
 
 # Do not provide a data query (-d) to verify code correctly handles an empty
 # query.
 pipetask qgraph -b DATA_REPO/butler.yaml \
     --input HSC/calib,HSC/raw/all,refcats \
-    -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml:processCcd" \
+    -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection_1
 
 # Do a new shorter run using replace-run
 pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
     --input HSC/calib,HSC/raw/all,refcats \
-    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml:isr" \
+    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#isr" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output demo_collection2
 
 pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
-    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml:isr" \
+    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#isr" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output demo_collection2 --replace-run
