@@ -22,9 +22,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import pickle
 import argparse
 from lsst.daf.butler import Butler
+from lsst.pipe.base import QuantumGraph
 
 
 if __name__ == "__main__":
@@ -35,9 +35,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     butler = Butler(args.butler)
-
-    with(open(args.graph, "rb")) as f:
-        graph = pickle.load(f)
+    graph = QuantumGraph.loadUri(args.graph, universe=butler.registry.dimensions)
 
     # dataset_types_to_save = ("brightObjectMask", "ps1_pv3_3pi_20170110",
     #                          "jointcal_photoCalib", "jointcal_wcs", "bias",
