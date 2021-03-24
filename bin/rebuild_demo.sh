@@ -33,7 +33,7 @@ butler="${CI_HSC_GEN3_DIR}/DATA"
 pipetask qgraph -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
     --instrument lsst.obs.subaru.HyperSuprimeCam -b "${butler}" \
     -i HSC/calib,HSC/raw/all,HSC/masks,refcats,skymaps \
-    -d "visit=903342 AND detector=10" --output make_graph -q single_ccd_graph.pkl
+    -d "visit=903342 AND detector=10" --output make_graph -q single_ccd_graph.qgraph
 
 # This should specify paths so that export.py can be generic
-python bin.src/exportGraphInputs.py "${butler}" single_ccd_graph.pkl
+python bin.src/exportGraphInputs.py "${butler}" single_ccd_graph.qgraph
