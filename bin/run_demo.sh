@@ -33,7 +33,7 @@ set -x
 # easier to read.
 
 if [ ! -f DATA_REPO/butler.yaml ]; then
-    butler create DATA_REPO
+    butler create --seed-config "${PIPELINES_CHECK_DIR}/configs/butler-seed.yaml" DATA_REPO
     butler register-instrument DATA_REPO lsst.obs.subaru.HyperSuprimeCam
 fi
 
