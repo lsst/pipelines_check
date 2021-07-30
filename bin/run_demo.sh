@@ -48,25 +48,27 @@ if [ -z "$(butler query-datasets DATA_REPO/ raw | grep HSC)" ]; then
     butler define-visits DATA_REPO HSC --collections HSC/raw/all
 fi
 
+incoll="HSC/calib,HSC/raw/all,refcats"
+
 # Pipeline execution will fail on second attempt because the output run
 # can not be the same.
 # Do not specify a number of processors (-j) to test that the default value
 # works.
 pipetask --long-log run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
-    --input HSC/calib,HSC/raw/all,refcats \
+    --input "$incoll" \
     --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection
 
 # Do not provide a data query (-d) to verify code correctly handles an empty
 # query.
 pipetask qgraph -b DATA_REPO/butler.yaml \
-    --input HSC/calib,HSC/raw/all,refcats \
+    --input "$incoll" \
     -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection_1
 
 # Do a new shorter run using replace-run
 pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
-    --input HSC/calib,HSC/raw/all,refcats \
+    --input "$incoll" \
     --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#isr" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output demo_collection2
 
