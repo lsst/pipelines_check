@@ -75,3 +75,62 @@ pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
 pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
     --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#isr" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output demo_collection2 --replace-run
+
+# Test the execution butler.
+# Create execution butler with new graph and output collection.
+
+graph_file="test_exe.qgraph"
+exedir="./execution_butler"
+exeoutput="demo_collection_exe"
+exerun="$exeoutput/YYYYMMDD"
+
+pipetask qgraph -b DATA_REPO/butler.yaml \
+    --input "$incoll" \
+    -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
+    -q "$graph_file" \
+    --save-execution-butler "$exedir" \
+    --clobber-execution-butler \
+    --instrument lsst.obs.subaru.HyperSuprimeCam --output "$exeoutput" --output-run "$exerun"
+
+# Run the execution butler in multiple steps, ensuring that a fresh
+# butler is used each time.
+
+tmp_butler="./tmp_execution_butler"
+refresh_exe() {
+  rm -rf "$tmp_butler"
+  mkdir "$tmp_butler"
+  cp "$exedir"/* "$tmp_butler/"
+}
+
+refresh_exe
+
+# Run the init step
+pipetask --long-log run -b "$tmp_butler" -i "$incoll" --output-run "$exerun" --init-only --register-dataset-types --qgraph "$graph_file" --extend-run
+
+# Run the three quanta one at a time to ensure that we can start from a
+# clean execution butler every time.
+refresh_exe
+node=0
+pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id "$node" --skip-init-writes --extend-run --clobber-outputs --skip-existing
+
+refresh_exe
+node=1
+pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id $node --skip-init-writes --extend-run --clobber-outputs --skip-existing
+
+refresh_exe
+node=2
+pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id $node --skip-init-writes --extend-run --clobber-outputs --skip-existing
+
+# Bring home the datasets.
+butler --log-level=VERBOSE --long-log transfer-datasets "$exedir" DATA_REPO --collections "$exerun"
+
+# Create the collection in the main repo.
+# Do this by first appending the input collections and then prepending
+# the output run collection. This way we do not need to check for existence
+# of a previous chain.
+# If --replace-run is required an extra line to do --mode=pop should be added.
+butler collection-chain DATA_REPO --mode=extend "$exeoutput" ${incoll//,/ }
+butler collection-chain DATA_REPO --mode=prepend "$exeoutput" "$exerun"
+
+# Run some tests on the final butler state.
+pytest tests/
