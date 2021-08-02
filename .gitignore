@@ -5,3 +5,6 @@ staging/junk.yaml
 .*dblite
 single_ccd_graph.pkl
 _build.*
+*.qgraph
+__pycache__
+*execution_butler
