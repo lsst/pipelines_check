@@ -54,6 +54,7 @@ incoll="HSC/calib,HSC/raw/all,refcats"
 # can not be the same.
 # Do not specify a number of processors (-j) to test that the default value
 # works.
+# The output collection name must match that used in the Python tests.
 pipetask --long-log run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
     --input "$incoll" \
     --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
@@ -81,6 +82,7 @@ pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
 
 graph_file="test_exe.qgraph"
 exedir="./execution_butler"
+# This collection name must match that used in the Python tests.
 exeoutput="demo_collection_exe"
 exerun="$exeoutput/YYYYMMDD"
 
