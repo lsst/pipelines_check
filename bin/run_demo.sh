@@ -131,7 +131,7 @@ butler --log-level=VERBOSE --long-log transfer-datasets "$exedir" DATA_REPO --co
 # the output run collection. This way we do not need to check for existence
 # of a previous chain.
 # If --replace-run is required an extra line to do --mode=pop should be added.
-butler collection-chain DATA_REPO --mode=extend "$exeoutput" ${incoll//,/ }
+butler collection-chain DATA_REPO --mode=extend "$exeoutput" "$incoll"
 butler collection-chain DATA_REPO --mode=prepend "$exeoutput" "$exerun"
 
 # Run some tests on the final butler state.
