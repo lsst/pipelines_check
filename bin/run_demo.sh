@@ -109,18 +109,21 @@ refresh_exe
 # Run the init step
 pipetask --long-log run -b "$tmp_butler" -i "$incoll" --output-run "$exerun" --init-only --register-dataset-types --qgraph "$graph_file" --extend-run
 
+NODES=( $(pipetask qgraph -b "$tmp_butler" -g "$graph_file" --show-qgraph-header \
+    |jq -r 'first(.Nodes)[][0]') )
+
 # Run the three quanta one at a time to ensure that we can start from a
 # clean execution butler every time.
 refresh_exe
-node=0
+node=${NODES[0]}
 pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id "$node" --skip-init-writes --extend-run --clobber-outputs --skip-existing
 
 refresh_exe
-node=1
+node=${NODES[1]}
 pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id $node --skip-init-writes --extend-run --clobber-outputs --skip-existing
 
 refresh_exe
-node=2
+node=${NODES[2]}
 pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id $node --skip-init-writes --extend-run --clobber-outputs --skip-existing
 
 # Bring home the datasets.
