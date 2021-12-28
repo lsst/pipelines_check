@@ -62,14 +62,14 @@ incoll="HSC/calib,HSC/raw/all,refcats"
 # The output collection name must match that used in the Python tests.
 pipetask --long-log run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
     --input "$incoll" \
-    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
+    --register-dataset-types -p "${DRP_PIPE_DIR}/pipelines/HSC/pipelines_check.yaml" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection
 
 # Do not provide a data query (-d) to verify code correctly handles an empty
 # query.
 pipetask qgraph -b DATA_REPO/butler.yaml \
     --input "$incoll" \
-    -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
+    -p "${DRP_PIPE_DIR}/pipelines/HSC/pipelines_check.yaml" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output-run demo_collection_1
 
 # Do a new shorter run using replace-run
@@ -93,7 +93,7 @@ exerun="$exeoutput/YYYYMMDD"
 
 pipetask qgraph -b DATA_REPO/butler.yaml \
     --input "$incoll" \
-    -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#processCcd" \
+    -p "${DRP_PIPE_DIR}/pipelines/HSC/pipelines_check.yaml" \
     -q "$graph_file" \
     --save-execution-butler "$exedir" \
     --clobber-execution-butler \
