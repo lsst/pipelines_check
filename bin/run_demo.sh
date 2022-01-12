@@ -48,6 +48,11 @@ if [ -z "$(butler query-datasets DATA_REPO/ raw | grep HSC)" ]; then
     butler define-visits DATA_REPO HSC --collections HSC/raw/all
 fi
 
+# Explicitly define a dataset type that uses the old style metadata definition.
+if [ -z "$(butler query-dataset-types DATA_REPO/ calibrate_metadata | grep -v results)"]; then
+    butler register-dataset-type DATA_REPO calibrate_metadata PropertySet band instrument detector physical_filter visit
+fi
+
 incoll="HSC/calib,HSC/raw/all,refcats"
 
 # Pipeline execution will fail on second attempt because the output run
