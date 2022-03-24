@@ -50,7 +50,16 @@ class PiplinesCheckTestCase(unittest.TestCase):
         Datasets are all unresolved.
         """
         collections = list(self.butler.registry.queryCollections(chain, flattenChains=True))
-        run = collections.pop(0)
+        # Choose the collection to query, and query datasets in that
+        # collection.
+        # The collection to query datasets from will be named "demo_collection"
+        # or "demo_collection_exe/YYYMMDD" (the exe collection is inserted in
+        # run_demo.sh). Collections will only contain one or the other (and no
+        # other collections named "demo_colleciton") so it is enough to just
+        # find the one with the name that contains "demo_collection" and use
+        # search it to resolve the other datasets.
+        run = next(c for c in collections if "demo_collection" in c)
+        collections.remove(run)
         print(f"Retrieving datasets from run {run}")
 
         unresolved = {ref.unresolved() for ref in self.butler.registry.queryDatasets(datasetType=datasetType,
