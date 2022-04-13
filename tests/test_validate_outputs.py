@@ -75,7 +75,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # #dm-science-pipelines as to whether the changes are
         # reasonable, and then replace the failing values by
         # running the test to determine the updated values.
-        expected_places = 7
+        expected_places = 6
         for name, var, val in [
                 ("im_mean", im_mean, 4.388558683399185),
                 ("im_std", im_std, 163.46927647357128),
