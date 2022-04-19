@@ -187,6 +187,28 @@ data:
     path: refcats/ps1_pv3_3pi_20170110/ps1_pv3_3pi_20170110_189648_refcats.fits
     formatter: lsst.obs.base.formatters.fitsGeneric.FitsGenericFormatter
 - type: dataset_type
+  name: gaia_dr2_20200414
+  dimensions:
+  - htm7
+  storage_class: SimpleCatalog
+  is_calibration: false
+- type: dataset
+  dataset_type: gaia_dr2_20200414
+  run: refcats
+  records:
+  - dataset_id:
+    - 1145
+    data_id:
+    - htm7: 189584
+    path: refcats/gaia_dr2_20200414/189584.fits
+    formatter: lsst.obs.base.formatters.fitsGeneric.FitsGenericFormatter
+  - dataset_id:
+    - 1146
+    data_id:
+    - htm7: 189648
+    path: refcats/gaia_dr2_20200414/189648.fits
+    formatter: lsst.obs.base.formatters.fitsGeneric.FitsGenericFormatter
+- type: dataset_type
   name: transmission_atmosphere
   dimensions:
   - instrument
