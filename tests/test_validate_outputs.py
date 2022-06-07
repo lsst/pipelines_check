@@ -85,22 +85,22 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
                 ("psf_ixx", psf_ixx, 4.25617019964148),
                 ("psf_iyy", psf_iyy, 4.69732577136400),
                 ("psf_ixy", psf_ixy, -0.56621170237753),
-                ("summary_psfSigma", summary.psfSigma, 2.11357804037643),
-                ("summary_psfIxx", summary.psfIxx, 4.27485828724784),
-                ("summary_psfIyy", summary.psfIyy, 4.74294480861589),
-                ("summary_psfIxy", summary.psfIxy, -0.56518375947959),
-                ("summary_psfArea", summary.psfArea, 79.04556738531909),
-                ("summary_ra", summary.ra, 320.75894104194123),
-                ("summary_decl", summary.decl, -0.23498279322929),
-                ("summary_zenithDistance", summary.zenithDistance, 21.04574977486804),
-                ("summary_zeroPoint", summary.zeroPoint, 30.54911728013719),
-                ("summary_skyBg", summary.skyBg, 179.07113681733608),
-                ("summary_skyNoise", summary.skyNoise, 7.37970203446796),
-                ("summary_meanVar", summary.meanVar, 49.84422543389540),
+                ("summary.psfSigma", summary.psfSigma, 2.11357804037643),
+                ("summary.psfIxx", summary.psfIxx, 4.27485828724784),
+                ("summary.psfIyy", summary.psfIyy, 4.74294480861589),
+                ("summary.psfIxy", summary.psfIxy, -0.56518375947959),
+                ("summary.psfArea", summary.psfArea, 79.04556738531909),
+                ("summary.ra", summary.ra, 320.75894104194123),
+                ("summary.decl", summary.decl, -0.23498279322929),
+                ("summary.zenithDistance", summary.zenithDistance, 21.04574977486804),
+                ("summary.zeroPoint", summary.zeroPoint, 30.54911728013719),
+                ("summary.skyBg", summary.skyBg, 179.07113681733608),
+                ("summary.skyNoise", summary.skyNoise, 7.37970203446796),
+                ("summary.meanVar", summary.meanVar, 49.84422543389540),
         ]:
             # Uncomment following line to get replacement code when
             # values need updating.
-            # print(f'("{name}", {name.replace("_", ".")}, {var:.14f}),')
+            # print(f'("{name}", {name}, {var:.14f}),')
             self.assertAlmostEqual(var, val, places=expected_places, msg=name)
 
     def test_background(self):
