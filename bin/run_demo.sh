@@ -76,11 +76,11 @@ pipetask qgraph -b DATA_REPO/butler.yaml \
 # Do a new shorter run using replace-run
 pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
     --input "$incoll" \
-    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#isr" \
+    --register-dataset-types -p "$pipeline#isr" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output demo_collection2
 
 pipetask run -d "exposure=903342 AND detector=10" -b DATA_REPO/butler.yaml \
-    --register-dataset-types -p "${PIPE_TASKS_DIR}/pipelines/DRP.yaml#isr" \
+    --register-dataset-types -p "$pipeline#isr" \
     --instrument lsst.obs.subaru.HyperSuprimeCam --output demo_collection2 --replace-run
 
 # Test the execution butler.
