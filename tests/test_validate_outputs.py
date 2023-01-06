@@ -77,25 +77,25 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # running the test to determine the updated values.
         expected_places = 6
         for name, var, val in [
-                ("im_mean", im_mean, 4.3885139685316),
-                ("im_std", im_std, 163.46927658066616),
+                ("im_mean", im_mean, 4.38845648821842),
+                ("im_std", im_std, 163.46927765507633),
                 ("var_mean", var_mean, 53.91476078545389),
                 ("var_std", var_std, 52.85387580502370),
-                ("num_good_pix", num_good_pix, 7725588.00000000000000),
-                ("psf_ixx", psf_ixx, 4.25617019964148),
-                ("psf_iyy", psf_iyy, 4.69732577136400),
-                ("psf_ixy", psf_ixy, -0.56621170237753),
-                ("summary.psfSigma", summary.psfSigma, 2.11357804037643),
-                ("summary.psfIxx", summary.psfIxx, 4.27485828724784),
-                ("summary.psfIyy", summary.psfIyy, 4.74294480861589),
-                ("summary.psfIxy", summary.psfIxy, -0.56518375947959),
-                ("summary.psfArea", summary.psfArea, 79.04556738531909),
-                ("summary.ra", summary.ra, 320.75894104194123),
-                ("summary.decl", summary.decl, -0.23498279322929),
-                ("summary.zenithDistance", summary.zenithDistance, 21.04574977486804),
-                ("summary.zeroPoint", summary.zeroPoint, 30.54911728013719),
-                ("summary.skyBg", summary.skyBg, 179.07113681733608),
-                ("summary.skyNoise", summary.skyNoise, 7.37970203446796),
+                ("num_good_pix", num_good_pix, 7725860.00000000000000),
+                ("psf_ixx", psf_ixx, 4.25321463377250),
+                ("psf_iyy", psf_iyy, 4.68744792227905),
+                ("psf_ixy", psf_ixy, -0.57906366364655),
+                ("summary.psfSigma", summary.psfSigma, 2.11204772252338),
+                ("summary.psfIxx", summary.psfIxx, 4.27282311525143),
+                ("summary.psfIyy", summary.psfIyy, 4.73537410989870),
+                ("summary.psfIxy", summary.psfIxy, -0.57893419909076),
+                ("summary.psfArea", summary.psfArea, 82.39603463309444),
+                ("summary.ra", summary.ra, 320.75894004426669),
+                ("summary.decl", summary.decl, -0.23498192580454),
+                ("summary.zenithDistance", summary.zenithDistance, 21.04574864515635),
+                ("summary.zeroPoint", summary.zeroPoint, 30.54906297508719),
+                ("summary.skyBg", summary.skyBg, 179.06882578134537),
+                ("summary.skyNoise", summary.skyNoise, 7.37966249488599),
                 ("summary.meanVar", summary.meanVar, 49.84422543389540),
         ]:
             # Uncomment following line to get replacement code when
@@ -111,8 +111,8 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         bg_mean = bg0_arr.mean(dtype=np.float64)
         bg_std = bg0_arr.std(dtype=np.float64)
 
-        self.assertAlmostEqual(bg_mean, 179.28372241205705, places=7, msg="calexpBackground mean")
-        self.assertAlmostEqual(bg_std, 0.8295642737492053, places=7, msg="calexpBackground stddev")
+        self.assertAlmostEqual(bg_mean, 179.28380261117348, places=7, msg="calexpBackground mean")
+        self.assertAlmostEqual(bg_std, 0.8294311037115708, places=7, msg="calexpBackground stddev")
 
     def test_ic_src(self):
         """Test icSrc catalog."""
