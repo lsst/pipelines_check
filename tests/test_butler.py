@@ -34,6 +34,7 @@ TESTDIR = os.path.abspath(os.path.dirname(__file__))
 # script.
 MAIN_CHAIN = "demo_collection"
 EXE_CHAIN = "demo_collection_exe"
+QBB_CHAIN = "demo_collection_qbb"
 
 
 class PiplinesCheckTestCase(unittest.TestCase):
@@ -90,22 +91,26 @@ class PiplinesCheckTestCase(unittest.TestCase):
     def testExecutionButler(self):
         """Check outputs match in both runs."""
 
-        # Check that we have identical datasets in both collections
-        # except for the dataset.id
-        main_datasets = self._get_datasets_from_chain(MAIN_CHAIN)
-        exe_datasets = self._get_datasets_from_chain(EXE_CHAIN)
-        self.assertGreater(len(exe_datasets), 0)
-        self.assertEqual(len(main_datasets), len(exe_datasets))
+        for chain in (EXE_CHAIN, QBB_CHAIN):
+            with self.subTest(chain=chain):
+                # Check that we have identical datasets in both collections
+                # except for the dataset.id
+                main_datasets = self._get_datasets_from_chain(MAIN_CHAIN)
+                datasets = self._get_datasets_from_chain(chain)
+                self.assertGreater(len(datasets), 0)
+                self.assertEqual(len(main_datasets), len(datasets))
 
-        difference = main_datasets - exe_datasets
-        self.assertEqual(len(difference), 0, "Some datasets missing.")
+                difference = main_datasets - datasets
+                self.assertEqual(len(difference), 0, "Some datasets missing.")
 
     def testExecutionExistence(self):
         """Check that the execution butler files are really there."""
 
-        exe_datasets = self._get_datasets_from_chain(EXE_CHAIN)
-        for ref in exe_datasets:
-            self.assertTrue(self.butler.datasetExists(ref, collections=EXE_CHAIN))
+        for chain in (EXE_CHAIN, QBB_CHAIN):
+            with self.subTest(chain=chain):
+                datasets = self._get_datasets_from_chain(chain)
+                for ref in datasets:
+                    self.assertTrue(self.butler.datasetExists(ref, collections=chain))
 
     def testLogDataset(self):
         """Ensure that the logs are captured in both modes."""
@@ -115,14 +120,19 @@ class PiplinesCheckTestCase(unittest.TestCase):
 
         isr_log_ref = log_datasets.pop()
 
-        # Get the logs from both main and exe collections.
+        # Get the logs from both main and exe/qbb collections.
         main_isr_log = self.butler.get("isr_log", dataId=isr_log_ref.dataId, collections=MAIN_CHAIN)
-        exe_isr_log = self.butler.get("isr_log", dataId=isr_log_ref.dataId, collections=EXE_CHAIN)
+        for chain in (EXE_CHAIN, QBB_CHAIN):
+            with self.subTest(chain=chain):
+                isr_log = self.butler.get("isr_log", dataId=isr_log_ref.dataId, collections=chain)
 
-        # Timestamps and durations will differ but check to see that the
-        # number of log messages matched.
-        self.assertEqual(len(main_isr_log), len(exe_isr_log),
-                         f"Standard log: {main_isr_log}\n vs\nExecution butler log: {exe_isr_log}")
+                # Timestamps and durations will differ but check to see that
+                # the number of log messages matched.
+                self.assertEqual(
+                    len(main_isr_log),
+                    len(isr_log),
+                    f"Standard log: {main_isr_log}\n vs\nExecution butler log: {isr_log}"
+                )
 
 
 if __name__ == "__main__":

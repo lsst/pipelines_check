@@ -143,5 +143,44 @@ butler --log-level=VERBOSE --long-log transfer-datasets "$exedir" DATA_REPO --co
 butler collection-chain DATA_REPO --mode=extend "$exeoutput" "$incoll"
 butler collection-chain DATA_REPO --mode=prepend "$exeoutput" "$exerun"
 
+# Test Quantum-backed butler, this will be a replacement for execution butler,
+# but for now we test them both, they should produce identical outputs going
+# to separate collections.
+
+graph_file="test_qbb.qgraph"
+# This collection name must match that used in the Python tests
+output_chain="demo_collection_qbb"
+output_run="$output_chain/YYYYMMDD"
+
+pipetask qgraph -b DATA_REPO/butler.yaml \
+    --input "$incoll" \
+    -p "$pipeline" \
+    -q "$graph_file" \
+    --qgraph-datastore-records \
+    --instrument lsst.obs.subaru.HyperSuprimeCam \
+    --output "$output_chain" \
+    --output-run "$output_run"
+
+# Run the init step
+pipetask --long-log pre-exec-init-qbb "DATA_REPO/butler.yaml" "$graph_file"
+
+NODES=( $(pipetask qgraph -b "DATA_REPO/butler.yaml" -g "$graph_file" --show-qgraph-header \
+    |jq -r 'first(.Nodes)[][0]') )
+
+# Run the three quanta one at a time to ensure that we can start from a
+# clean execution butler every time.
+node=${NODES[0]}
+pipetask --long-log run-qbb --qgraph-node-id "$node" "DATA_REPO/butler.yaml" "$graph_file"
+
+node=${NODES[1]}
+pipetask --long-log run-qbb --qgraph-node-id "$node" "DATA_REPO/butler.yaml" "$graph_file"
+
+node=${NODES[2]}
+pipetask --long-log run-qbb --qgraph-node-id "$node" "DATA_REPO/butler.yaml" "$graph_file"
+
+# Bring home the datasets, --update-output-chain also creates output chain
+# collection from metadata stored in a graph.
+butler --log-level=VERBOSE --long-log transfer-from-graph --update-output-chain "$graph_file" DATA_REPO
+
 # Run some tests on the final butler state.
 pytest tests/
