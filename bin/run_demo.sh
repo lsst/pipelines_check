@@ -102,35 +102,31 @@ pipetask qgraph -b DATA_REPO/butler.yaml \
 
 # Run the execution butler in multiple steps, ensuring that a fresh
 # butler is used each time.
-
-tmp_butler="./tmp_execution_butler"
-refresh_exe() {
-  rm -rf "$tmp_butler"
-  mkdir "$tmp_butler"
-  cp "$exedir"/* "$tmp_butler/"
+refresh_butler() {
+  rm -rf "$1"
+  mkdir "$1"
+  cp "$exedir"/* "$1/"
 }
 
-refresh_exe
-
 # Run the init step
-pipetask --long-log run -b "$tmp_butler" -i "$incoll" --output-run "$exerun" --init-only --register-dataset-types --qgraph "$graph_file" --extend-run
-
-NODES=( $(pipetask qgraph -b "$tmp_butler" -g "$graph_file" --show-qgraph-header \
-    |jq -r 'first(.Nodes)[][0]') )
+TMP_BUTLER="./tmp_execution_butler"
+refresh_butler $TMP_BUTLER
+pipetask --long-log run -b "$TMP_BUTLER" -i "$incoll" --output-run "$exerun" --init-only --register-dataset-types --qgraph "$graph_file" --extend-run
 
 # Run the three quanta one at a time to ensure that we can start from a
 # clean execution butler every time.
-refresh_exe
-node=${NODES[0]}
-pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id "$node" --skip-init-writes --extend-run --clobber-outputs --skip-existing
+for NODE in $(pipetask qgraph -b "$TMP_BUTLER" -g "$graph_file" --show-qgraph-header \
+    |jq -r 'first(.Nodes)[][0]')
+do
+  # Run the execution butler in multiple steps, ensuring that a fresh
+  # butler is used each time.
+  TMP_BUTLER_NODE="./tmp_execution_butler-$NODE"
+  refresh_butler $TMP_BUTLER_NODE
 
-refresh_exe
-node=${NODES[1]}
-pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id $node --skip-init-writes --extend-run --clobber-outputs --skip-existing
+  pipetask --long-log run -b "$TMP_BUTLER_NODE" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id "$NODE" --skip-init-writes --extend-run --clobber-outputs --skip-existing
 
-refresh_exe
-node=${NODES[2]}
-pipetask --long-log run -b "$tmp_butler" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id $node --skip-init-writes --extend-run --clobber-outputs --skip-existing
+  rm -rf $TMP_BUTLER_NODE
+done
 
 # Bring home the datasets.
 butler --log-level=VERBOSE --long-log transfer-datasets "$exedir" DATA_REPO --collections "$exerun"
