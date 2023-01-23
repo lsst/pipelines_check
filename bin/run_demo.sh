@@ -164,19 +164,13 @@ pipetask qgraph -b DATA_REPO/butler.yaml \
 # Run the init step
 pipetask --long-log pre-exec-init-qbb "DATA_REPO/butler.yaml" "$graph_file"
 
-NODES=( $(pipetask qgraph -b "DATA_REPO/butler.yaml" -g "$graph_file" --show-qgraph-header \
-    |jq -r 'first(.Nodes)[][0]') )
-
 # Run the three quanta one at a time to ensure that we can start from a
 # clean execution butler every time.
-node=${NODES[0]}
-pipetask --long-log run-qbb --qgraph-node-id "$node" "DATA_REPO/butler.yaml" "$graph_file"
-
-node=${NODES[1]}
-pipetask --long-log run-qbb --qgraph-node-id "$node" "DATA_REPO/butler.yaml" "$graph_file"
-
-node=${NODES[2]}
-pipetask --long-log run-qbb --qgraph-node-id "$node" "DATA_REPO/butler.yaml" "$graph_file"
+for NODE in $(pipetask qgraph -b "DATA_REPO/butler.yaml" -g "$graph_file" --show-qgraph-header \
+    |jq -r 'first(.Nodes)[][0]')
+do
+    pipetask --long-log run-qbb --qgraph-node-id "$NODE" "DATA_REPO/butler.yaml" "$graph_file"
+done
 
 # Bring home the datasets, --update-output-chain also creates output chain
 # collection from metadata stored in a graph.
