@@ -114,17 +114,13 @@ test_execution_butler() {
   refresh_butler $TMP_BUTLER
   pipetask --long-log run -b "$TMP_BUTLER" -i "$incoll" --output-run "$exerun" --init-only --register-dataset-types --qgraph "$graph_file" --extend-run
 
-  # Run the three quanta one at a time to ensure that we can start from a
-  # clean execution butler every time.
+  # Run the three quanta sequentially with a refreshed execution butler ever time.
   for NODE in $(pipetask qgraph -b "$TMP_BUTLER" -g "$graph_file" --show-qgraph-header \
       |jq -r 'first(.Nodes)[][0]')
   do
-    # Run the execution butler in multiple steps, ensuring that a fresh
-    # butler is used each time.
     TMP_BUTLER_NODE="./tmp_execution_butler-$NODE"
     refresh_butler $TMP_BUTLER_NODE
 
-    # Run these three pipetasks concurrently
     pipetask --long-log run -b "$TMP_BUTLER_NODE" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id "$NODE" --skip-init-writes --extend-run --clobber-outputs --skip-existing
   done
 
@@ -165,8 +161,7 @@ test_quantum_butler() {
   # Run the init step
   pipetask --long-log pre-exec-init-qbb "DATA_REPO/butler.yaml" "$graph_file"
 
-  # Run the three quanta one at a time to ensure that we can start from a
-  # clean execution butler every time.
+  # Run each pipeline step in turn.
   for NODE in $(pipetask qgraph -b "DATA_REPO/butler.yaml" -g "$graph_file" --show-qgraph-header \
       |jq -r 'first(.Nodes)[][0]')
   do
