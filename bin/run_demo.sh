@@ -123,10 +123,14 @@ do
   TMP_BUTLER_NODE="./tmp_execution_butler-$NODE"
   refresh_butler $TMP_BUTLER_NODE
 
-  pipetask --long-log run -b "$TMP_BUTLER_NODE" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id "$NODE" --skip-init-writes --extend-run --clobber-outputs --skip-existing
-
-  rm -rf $TMP_BUTLER_NODE
+  # Run these three pipetasks concurrently
+  pipetask --long-log run -b "$TMP_BUTLER_NODE" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id "$NODE" --skip-init-writes --extend-run --clobber-outputs --skip-existing &
 done
+
+# Wait for the three pipetasks to all finish
+wait
+rm -rf ./tmp_execution_butler-*
+rm -rf $TMP_BUTLER
 
 # Bring home the datasets.
 butler --log-level=VERBOSE --long-log transfer-datasets "$exedir" DATA_REPO --collections "$exerun"
@@ -165,8 +169,10 @@ pipetask --long-log pre-exec-init-qbb "DATA_REPO/butler.yaml" "$graph_file"
 for NODE in $(pipetask qgraph -b "DATA_REPO/butler.yaml" -g "$graph_file" --show-qgraph-header \
     |jq -r 'first(.Nodes)[][0]')
 do
-    pipetask --long-log run-qbb --qgraph-node-id "$NODE" "DATA_REPO/butler.yaml" "$graph_file"
+    pipetask --long-log run-qbb --qgraph-node-id "$NODE" "DATA_REPO/butler.yaml" "$graph_file" &
 done
+
+wait
 
 # Bring home the datasets, --update-output-chain also creates output chain
 # collection from metadata stored in a graph.
