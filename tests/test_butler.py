@@ -47,8 +47,6 @@ class PiplinesCheckTestCase(unittest.TestCase):
 
     def _get_datasets_from_chain(self, chain, datasetType=...):
         """Return all the datasets from the first run in chain.
-
-        Datasets are all unresolved.
         """
         collections = list(self.butler.registry.queryCollections(chain, flattenChains=True))
         # Choose the collection to query, and query datasets in that
@@ -63,9 +61,8 @@ class PiplinesCheckTestCase(unittest.TestCase):
         collections.remove(run)
         print(f"Retrieving datasets from run {run}")
 
-        unresolved = {ref.unresolved() for ref in self.butler.registry.queryDatasets(datasetType=datasetType,
-                                                                                     collections=run)}
-        return unresolved
+        refs = set(self.butler.registry.queryDatasets(datasetType=datasetType, collections=run))
+        return refs
 
     def testMetadata(self):
         """Test that metadata can be retrieved."""
@@ -100,7 +97,11 @@ class PiplinesCheckTestCase(unittest.TestCase):
                 self.assertGreater(len(datasets), 0)
                 self.assertEqual(len(main_datasets), len(datasets))
 
-                difference = main_datasets - datasets
+                # Extract dataset type and DataIds for comparison.
+                main_data_ids = {(ref.datasetType, ref.dataId) for ref in main_datasets}
+                data_ids = {(ref.datasetType, ref.dataId) for ref in datasets}
+
+                difference = main_data_ids - data_ids
                 self.assertEqual(len(difference), 0, "Some datasets missing.")
 
     def testExecutionExistence(self):
