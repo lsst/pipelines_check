@@ -165,7 +165,7 @@ test_quantum_butler() {
   for NODE in $(pipetask qgraph -b "DATA_REPO/butler.yaml" -g "$graph_file" --show-qgraph-header \
       |jq -r 'first(.Nodes)[][0]')
   do
-      pipetask --long-log run-qbb --qgraph-node-id "$NODE" "DATA_REPO/butler.yaml" "$graph_file"
+      pipetask --long-log run-qbb -j 2 --qgraph-node-id "$NODE" "DATA_REPO/butler.yaml" "$graph_file"
   done
 
   # Bring home the datasets, --update-output-chain also creates output chain
