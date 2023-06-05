@@ -91,7 +91,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
                 ("summary.psfIxy", summary.psfIxy, -0.57899030354606),
                 ("summary.psfArea", summary.psfArea, 82.65496170674636),
                 ("summary.ra", summary.ra, 320.75894004802291),
-                ("summary.decl", summary.decl, -0.23498192412129),
+                ("summary.dec", summary.dec, -0.23498192412129),
                 ("summary.zenithDistance", summary.zenithDistance, 21.04574864469552),
                 ("summary.zeroPoint", summary.zeroPoint, 30.54906813372720),
                 ("summary.skyBg", summary.skyBg, 179.06802094727755),
