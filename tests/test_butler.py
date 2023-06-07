@@ -111,7 +111,7 @@ class PiplinesCheckTestCase(unittest.TestCase):
             with self.subTest(chain=chain):
                 datasets = self._get_datasets_from_chain(chain)
                 for ref in datasets:
-                    self.assertTrue(self.butler.datasetExists(ref, collections=chain))
+                    self.assertTrue(self.butler.exists(ref))
 
     def testLogDataset(self):
         """Ensure that the logs are captured in both modes."""
