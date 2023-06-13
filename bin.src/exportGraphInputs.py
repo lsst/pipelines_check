@@ -35,7 +35,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     butler = Butler(args.butler)
-    graph = QuantumGraph.loadUri(args.graph, universe=butler.registry.dimensions)
+    graph = QuantumGraph.loadUri(args.graph, universe=butler.dimensions)
 
     # dataset_types_to_save = ("brightObjectMask", "ps1_pv3_3pi_20170110",
     #                          "jointcal_photoCalib", "jointcal_wcs", "bias",
