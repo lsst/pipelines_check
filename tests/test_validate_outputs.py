@@ -101,7 +101,8 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
             # Uncomment following line to get replacement code when
             # values need updating.
             # print(f'("{name}", {name}, {var:.14f}),')
-            self.assertAlmostEqual(var, val, places=expected_places, msg=name)
+            with self.subTest(name):
+                self.assertAlmostEqual(var, val, places=expected_places, msg=name)
 
     def test_background(self):
         """Test background level."""
