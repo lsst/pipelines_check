@@ -112,8 +112,12 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         bg_mean = bg0_arr.mean(dtype=np.float64)
         bg_std = bg0_arr.std(dtype=np.float64)
 
-        self.assertAlmostEqual(bg_mean, 179.2837806173611, places=7, msg="calexpBackground mean")
-        self.assertAlmostEqual(bg_std, 0.8294872758615469, places=7, msg="calexpBackground stddev")
+        for name, var, val in (
+                ("calexpBackground mean", bg_mean, 179.2837806173611),
+                ("calexpBackground stddev", bg_std, 0.8294872758615469),
+        ):
+            with self.subTest(name):
+                self.assertAlmostEqual(var, val, places=7, msg=name)
 
     def test_ic_src(self):
         """Test icSrc catalog."""
