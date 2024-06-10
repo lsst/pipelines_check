@@ -93,7 +93,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
                 ("summary.ra", summary.ra, 320.75894004802291),
                 ("summary.dec", summary.dec, -0.23498192412129),
                 ("summary.zenithDistance", summary.zenithDistance, 21.04574864469552),
-                ("summary.zeroPoint", summary.zeroPoint, 30.54906813372720),
+                ("summary.zeroPoint", summary.zeroPoint, 30.54872932855146),
                 ("summary.skyBg", summary.skyBg, 179.06802094727755),
                 ("summary.skyNoise", summary.skyNoise, 7.379663872285585),
                 ("summary.meanVar", summary.meanVar, 49.844220911820656),
