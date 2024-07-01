@@ -49,7 +49,7 @@ if [ -z "$(butler query-datasets DATA_REPO/ raw | grep HSC)" ]; then
 fi
 
 # Explicitly define a dataset type that uses the old style metadata definition.
-if [ -z "$(butler query-dataset-types DATA_REPO/ calibrate_metadata | grep -v results)"]; then
+if [ -z "$(butler query-dataset-types DATA_REPO/ calibrate_metadata | grep -v results)" ]; then
     butler register-dataset-type DATA_REPO calibrate_metadata PropertySet band instrument detector physical_filter visit
 fi
 
