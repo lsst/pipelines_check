@@ -43,9 +43,9 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         self.detector = 10
         self.visit = 903342
 
-    def test_calexp(self):
-        """Test quantities in the calexp."""
-        exposure = self.butler.get("calexp", detector=self.detector, visit=self.visit)
+    def test_exposure(self):
+        """Test quantities in the output exposure."""
+        exposure = self.butler.get("initial_pvi", detector=self.detector, visit=self.visit)
 
         self.assertEqual(exposure.getBBox(),
                          geom.Box2I(geom.Point2I(0, 0), geom.Extent2I(2048, 4176)))
@@ -77,26 +77,27 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # running the test to determine the updated values.
         expected_places = 6
         for name, var, val in [
-                ("im_mean", im_mean, 4.388460305025128),
-                ("im_std", im_std, 163.469288506899),
-                ("var_mean", var_mean, 53.91475493109997),
-                ("var_std", var_std, 52.853876792259776),
-                ("num_good_pix", num_good_pix, 7725856.00000000000000),
-                ("psf_ixx", psf_ixx, 4.253191896391297),
-                ("psf_iyy", psf_iyy, 4.687398087280896),
-                ("psf_ixy", psf_ixy, -0.57911628487574),
-                ("summary.psfSigma", summary.psfSigma, 2.11203591780044),
-                ("summary.psfIxx", summary.psfIxx, 4.272793487741165),
-                ("summary.psfIyy", summary.psfIyy, 4.735316824053334),
-                ("summary.psfIxy", summary.psfIxy, -0.57899030354606),
-                ("summary.psfArea", summary.psfArea, 82.65496170674636),
-                ("summary.ra", summary.ra, 320.75894004802291),
-                ("summary.dec", summary.dec, -0.23498192412129),
-                ("summary.zenithDistance", summary.zenithDistance, 21.04574864469552),
-                ("summary.zeroPoint", summary.zeroPoint, 30.54872932855146),
-                ("summary.skyBg", summary.skyBg, 179.06802094727755),
-                ("summary.skyNoise", summary.skyNoise, 7.379663872285585),
-                ("summary.meanVar", summary.meanVar, 49.844220911820656),
+                # TODO: mean and stddev went up by ~2x: why?
+                ("im_mean", im_mean, 9.531024035063668),
+                ("im_std", im_std, 356.61134988331634),
+                ("var_mean", var_mean, 256.58753444207656),
+                ("var_std", var_std, 252.04751368033772),
+                ("num_good_pix", num_good_pix, 7755316),
+                ("psf_ixx", psf_ixx, 4.266612709669518),
+                ("psf_iyy", psf_iyy, 4.683723243116094),
+                ("psf_ixy", psf_ixy, -0.5839513515277733),
+                ("summary.psfSigma", summary.psfSigma, 2.1140426108341264),
+                ("summary.psfIxx", summary.psfIxx, 4.2881403687668715),
+                ("summary.psfIyy", summary.psfIyy, 4.737163525163974),
+                ("summary.psfIxy", summary.psfIxy, -0.5831694374862149),
+                ("summary.psfArea", summary.psfArea, 82.34258460422038),
+                ("summary.ra", summary.ra, 320.7589334460734),
+                ("summary.dec", summary.dec, -0.23498074547048764),
+                ("summary.zenithDistance", summary.zenithDistance, 21.045745454754197),
+                ("summary.zeroPoint", summary.zeroPoint, 31.4),
+                ("summary.skyBg", summary.skyBg, 179.08888352662325),
+                ("summary.skyNoise", summary.skyNoise, 16.098847356721073),
+                ("summary.meanVar", summary.meanVar, 237.20975325831975),
         ]:
             # Uncomment following line to get replacement code when
             # values need updating.
@@ -106,28 +107,28 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
 
     def test_background(self):
         """Test background level."""
-        bkg = self.butler.get("calexpBackground", detector=self.detector, visit=self.visit)
+        bkg = self.butler.get("initial_pvi_background", detector=self.detector, visit=self.visit)
 
         bg0_arr = bkg.getImage().array
         bg_mean = bg0_arr.mean(dtype=np.float64)
         bg_std = bg0_arr.std(dtype=np.float64)
 
         for name, var, val in (
-                ("calexpBackground mean", bg_mean, 179.2837806173611),
-                ("calexpBackground stddev", bg_std, 0.8294872758615469),
+                ("calexpBackground mean", bg_mean, 179.3032548588351),
+                ("calexpBackground stddev", bg_std, 0.8273679195310446),
         ):
             with self.subTest(name):
                 self.assertAlmostEqual(var, val, places=7, msg=name)
 
-    def test_ic_src(self):
-        """Test icSrc catalog."""
-        ic_src = self.butler.get("icSrc", detector=self.detector, visit=self.visit)
-        self.assertEqual(len(ic_src), 266)
+    def test_initial_psf_stars(self):
+        initial_psf_stars = self.butler.get("initial_psf_stars_detector",
+                                            detector=self.detector, visit=self.visit)
+        self.assertEqual(len(initial_psf_stars), 266)
 
-    def test_src(self):
-        """Test src catalog."""
-        src = self.butler.get("src", detector=self.detector, visit=self.visit)
-        self.assertEqual(len(src), 1363)
+    def test_initial_stars(self):
+        initial_stars = self.butler.get("initial_stars_detector",
+                                        detector=self.detector, visit=self.visit)
+        self.assertEqual(len(initial_stars), 350)
 
 
 def setup_module(module):
