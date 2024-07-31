@@ -43,9 +43,9 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         self.detector = 10
         self.visit = 903342
 
-    def test_calexp(self):
-        """Test quantities in the calexp."""
-        exposure = self.butler.get("calexp", detector=self.detector, visit=self.visit)
+    def test_exposure(self):
+        """Test quantities in the output exposure."""
+        exposure = self.butler.get("initial_pvi", detector=self.detector, visit=self.visit)
 
         self.assertEqual(exposure.getBBox(),
                          geom.Box2I(geom.Point2I(0, 0), geom.Extent2I(2048, 4176)))
@@ -77,27 +77,27 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # running the test to determine the updated values.
         standard_atol = 5e-7
         for name, var, val, atol in [
-                ("im_mean", im_mean, 4.3885845565891, standard_atol),
-                ("im_std", im_std, 163.46922027517536, standard_atol),
-                ("var_mean", var_mean, 51.764979094464934, standard_atol),
-                ("var_std", var_std, 48.19498276625069, standard_atol),
-                ("num_good_pix", num_good_pix, 7725755.00000000000000, 0),
-                ("psf_ixx", psf_ixx, 4.253191896391297, 6e-7),
-                ("psf_iyy", psf_iyy, 4.687397483153177, 7e-7),
-                ("psf_ixy", psf_ixy, -0.57911628487574, standard_atol),
-                ("summary.psfSigma", summary.psfSigma, 2.11203591780044, standard_atol),
-                ("summary.psfIxx", summary.psfIxx, 4.272794013403168, 5.1e-7),
-                ("summary.psfIyy", summary.psfIyy, 4.735316824053334, standard_atol),
-                ("summary.psfIxy", summary.psfIxy, -0.57899030354606, standard_atol),
+                ("im_mean", im_mean, 9.573747386158793, standard_atol),
+                ("im_std", im_std, 358.0670110051918, standard_atol),
+                ("var_mean", var_mean, 248.36957836309554, standard_atol),
+                ("var_std", var_std, 231.55870996135118, standard_atol),
+                ("num_good_pix", num_good_pix, 7748125, 0),
+                ("psf_ixx", psf_ixx, 4.267383627670743, 6e-7),
+                ("psf_iyy", psf_iyy, 4.688844960286263, 7e-7),
+                ("psf_ixy", psf_ixy, -0.5830372248114177, standard_atol),
+                ("summary.psfSigma", summary.psfSigma, 2.1137084416932836, standard_atol),
+                ("summary.psfIxx", summary.psfIxx, 4.286740805245574, 5.1e-7),
+                ("summary.psfIyy", summary.psfIyy, 4.735538416914092, standard_atol),
+                ("summary.psfIxy", summary.psfIxy, -0.5823368254962096, standard_atol),
                 # TODO: Find a way to tighten psfArea atol in DM-46415.
-                ("summary.psfArea", summary.psfArea, 82.65495879853161, 7e-6),
-                ("summary.ra", summary.ra, 320.75894004802291, standard_atol),
-                ("summary.dec", summary.dec, -0.23498192412129, standard_atol),
-                ("summary.zenithDistance", summary.zenithDistance, 21.04574864469552, standard_atol),
-                ("summary.zeroPoint", summary.zeroPoint, 30.548692694925332, standard_atol),
-                ("summary.skyBg", summary.skyBg, 179.06974010169506, standard_atol),
-                ("summary.skyNoise", summary.skyNoise, 7.379652920569057, standard_atol),
-                ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
+                ("summary.psfArea", summary.psfArea, 82.62854204255743, 7e-6),
+                ("summary.ra", summary.ra, 320.7589334460734, standard_atol),
+                ("summary.dec", summary.dec, -0.23498074547048764, standard_atol),
+                ("summary.zenithDistance", summary.zenithDistance, 21.045745454754197, standard_atol),
+                ("summary.zeroPoint", summary.zeroPoint, 31.4, standard_atol),
+                ("summary.skyBg", summary.skyBg, 392.27323201298714, standard_atol),
+                ("summary.skyNoise", summary.skyNoise, 16.16458357968277, standard_atol),
+                ("summary.meanVar", summary.meanVar, 228.66847371399496, standard_atol),
         ]:
             # Uncomment following line to get replacement code when
             # values need updating.
@@ -107,28 +107,28 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
 
     def test_background(self):
         """Test background level."""
-        bkg = self.butler.get("calexpBackground", detector=self.detector, visit=self.visit)
+        bkg = self.butler.get("initial_pvi_background", detector=self.detector, visit=self.visit)
 
         bg0_arr = bkg.getImage().array
         bg_mean = bg0_arr.mean(dtype=np.float64)
         bg_std = bg0_arr.std(dtype=np.float64)
 
         for name, var, val in (
-                ("calexpBackground mean", bg_mean, 179.2836464883374),
-                ("calexpBackground stddev", bg_std, 0.8296105383233686),
+                ("initial_pvi_background mean", bg_mean, 392.74626436826),
+                ("initial_pvi_background stddev", bg_std, 1.8123839393979808),
         ):
             with self.subTest(name):
                 self.assertAlmostEqual(var, val, places=7, msg=name)
 
-    def test_ic_src(self):
-        """Test icSrc catalog."""
-        ic_src = self.butler.get("icSrc", detector=self.detector, visit=self.visit)
-        self.assertEqual(len(ic_src), 266)
+    def test_initial_psf_stars(self):
+        initial_psf_stars = self.butler.get("initial_psf_stars_detector",
+                                            detector=self.detector, visit=self.visit)
+        self.assertEqual(len(initial_psf_stars), 266)
 
-    def test_src(self):
-        """Test src catalog."""
-        src = self.butler.get("src", detector=self.detector, visit=self.visit)
-        self.assertEqual(len(src), 1363)
+    def test_initial_stars(self):
+        initial_stars = self.butler.get("initial_stars_detector",
+                                        detector=self.detector, visit=self.visit)
+        self.assertEqual(len(initial_stars), 446)
 
 
 def setup_module(module):
