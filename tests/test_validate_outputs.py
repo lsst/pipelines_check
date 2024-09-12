@@ -77,26 +77,26 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # running the test to determine the updated values.
         expected_places = 6
         for name, var, val in [
-                ("im_mean", im_mean, 4.388460305025128),
-                ("im_std", im_std, 163.469288506899),
-                ("var_mean", var_mean, 53.91475493109997),
-                ("var_std", var_std, 52.853876792259776),
-                ("num_good_pix", num_good_pix, 7725856.00000000000000),
+                ("im_mean", im_mean, 4.3885845565891),
+                ("im_std", im_std, 163.46922027517536),
+                ("var_mean", var_mean, 51.764979094464934),
+                ("var_std", var_std, 48.19498276625069),
+                ("num_good_pix", num_good_pix, 7725755.00000000000000),
                 ("psf_ixx", psf_ixx, 4.253191896391297),
-                ("psf_iyy", psf_iyy, 4.687398087280896),
+                ("psf_iyy", psf_iyy, 4.687397483153177),
                 ("psf_ixy", psf_ixy, -0.57911628487574),
                 ("summary.psfSigma", summary.psfSigma, 2.11203591780044),
-                ("summary.psfIxx", summary.psfIxx, 4.272793487741165),
+                ("summary.psfIxx", summary.psfIxx, 4.272794013403168),
                 ("summary.psfIyy", summary.psfIyy, 4.735316824053334),
                 ("summary.psfIxy", summary.psfIxy, -0.57899030354606),
-                ("summary.psfArea", summary.psfArea, 82.65496170674636),
+                ("summary.psfArea", summary.psfArea, 82.65495879853161),
                 ("summary.ra", summary.ra, 320.75894004802291),
                 ("summary.dec", summary.dec, -0.23498192412129),
                 ("summary.zenithDistance", summary.zenithDistance, 21.04574864469552),
-                ("summary.zeroPoint", summary.zeroPoint, 30.54872932855146),
-                ("summary.skyBg", summary.skyBg, 179.06802094727755),
-                ("summary.skyNoise", summary.skyNoise, 7.379663872285585),
-                ("summary.meanVar", summary.meanVar, 49.844220911820656),
+                ("summary.zeroPoint", summary.zeroPoint, 30.548692694925332),
+                ("summary.skyBg", summary.skyBg, 179.06974010169506),
+                ("summary.skyNoise", summary.skyNoise, 7.379652920569057),
+                ("summary.meanVar", summary.meanVar, 47.65954782565453),
         ]:
             # Uncomment following line to get replacement code when
             # values need updating.
@@ -113,8 +113,8 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         bg_std = bg0_arr.std(dtype=np.float64)
 
         for name, var, val in (
-                ("calexpBackground mean", bg_mean, 179.2837806173611),
-                ("calexpBackground stddev", bg_std, 0.8294872758615469),
+                ("calexpBackground mean", bg_mean, 179.2836464883374),
+                ("calexpBackground stddev", bg_std, 0.8296105383233686),
         ):
             with self.subTest(name):
                 self.assertAlmostEqual(var, val, places=7, msg=name)
