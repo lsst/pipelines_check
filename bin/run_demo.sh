@@ -43,7 +43,7 @@ if [ ! -d DATA_REPO/HSC/calib ]; then
 fi
 
 # ingestRaws.py doesn't search recursively; over-specifying to work around that.
-if [ -z "$(butler query-datasets DATA_REPO/ raw | grep HSC)" ]; then
+if [ -z "$(butler query-datasets --collections "*" DATA_REPO/ raw | grep HSC)" ]; then
     butler ingest-raws DATA_REPO input_data/HSC/raw/all/raw/r/HSC-R/ --transfer direct
     butler define-visits DATA_REPO HSC --collections HSC/raw/all
 fi
