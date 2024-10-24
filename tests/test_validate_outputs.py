@@ -105,6 +105,49 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
             with self.subTest(name):
                 self.assertFloatsAlmostEqual(var, val, atol=atol, rtol=0, msg=name)
 
+    def test_calibrateMetadata(self):
+        """Test calibrate task metadata metrics."""
+        metadata = self.butler.get("calibrate_metadata", detector=self.detector, visit=self.visit)
+
+        # NOTE: These values are purely empirical, and need to be
+        # updated to reflect major algorithmic changes. A failure
+        # here may be caused by either a metric deviating from its
+        # definition, or by another algorithmic change. If the
+        # former, you may need to edit the metric definition.
+        standard_atol = 5e-7
+        for name, val, atol in [
+            ("positive_footprint_count", 934, standard_atol),
+            ("negative_footprint_count", 27, standard_atol),
+            ("source_count", 1363, standard_atol),
+            ("sky_footprint_count", 100, standard_atol),
+            ("saturated_source_count", 15, standard_atol),
+            ("bad_source_count", 78, standard_atol),
+            ("bad_mask_fraction", 0.027228227520354406, standard_atol),
+            ("cr_mask_fraction", 0.0002657718585368774, standard_atol),
+            ("crosstalk_mask_fraction", 0.00035615533704501915, standard_atol),
+            ("edge_mask_fraction", 0.011613984674329503, standard_atol),
+            ("intrp_mask_fraction", 0.027760238939774903, standard_atol),
+            ("no_data_mask_fraction", 0.006863765789631226, standard_atol),
+            ("detected_mask_fraction", 0.06479396308518917, standard_atol),
+            ("detected_negative_mask_fraction", 0.0, standard_atol),
+            ("sat_mask_fraction", 0.00029067700850095784, standard_atol),
+            ("streak_mask_fraction", 0.0, standard_atol),
+            ("suspect_mask_fraction", 4.057317857998084e-05, standard_atol),
+            ("unmaskednan_mask_fraction", 0.0, standard_atol),
+        ]:
+            with self.subTest(name):
+                msg = (
+                    f"The {name} metric differs from the expected value of {val}. \n"
+                    "The metric may have departed from its definition."
+                )
+                self.assertFloatsAlmostEqual(
+                    metadata['calibrate'][name],
+                    val,
+                    atol=atol,
+                    rtol=0,
+                    msg=msg,
+                )
+
     def test_background(self):
         """Test background level."""
         bkg = self.butler.get("calexpBackground", detector=self.detector, visit=self.visit)
