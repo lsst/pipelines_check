@@ -43,7 +43,7 @@ if [ ! -d DATA_REPO/HSC/calib ]; then
 fi
 
 # ingestRaws.py doesn't search recursively; over-specifying to work around that.
-if [ -z "$(butler query-datasets DATA_REPO/ raw | grep HSC)" ]; then
+if [ -z "$(butler query-datasets --collections "*" DATA_REPO/ raw | grep HSC)" ]; then
     butler ingest-raws DATA_REPO input_data/HSC/raw/all/raw/r/HSC-R/ --transfer direct
     butler define-visits DATA_REPO HSC --collections HSC/raw/all
 fi
@@ -169,7 +169,11 @@ test_quantum_butler() {
   done
 
   # Bring home the datasets, --update-output-chain also creates output chain
-  # collection from metadata stored in a graph.
+  # collection from metadata stored in a graph. Ingest some via a zip file.
+  output=$(butler --log-level=VERBOSE --long-log zip-from-graph "$graph_file" DATA_REPO ./ -d "cal*")
+  echo $output
+  zip_path=$(echo $output | grep .zip | awk -F/ {'print $NF'})
+  butler ingest-zip DATA_REPO $zip_path
   butler --log-level=VERBOSE --long-log transfer-from-graph --update-output-chain "$graph_file" DATA_REPO
 }
 
