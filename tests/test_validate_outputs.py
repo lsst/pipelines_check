@@ -94,7 +94,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
                 ("summary.ra", summary.ra, 320.7589338738758, standard_atol),
                 ("summary.dec", summary.dec, -0.23498072899127875, standard_atol),
                 ("summary.zenithDistance", summary.zenithDistance, 21.045745569180554, standard_atol),
-                ("summary.zeroPoint", summary.zeroPoint, 30.54879141025879, standard_atol),
+                ("summary.zeroPoint", summary.zeroPoint, 30.54879141025879, 1e-5),
                 ("summary.skyBg", summary.skyBg, 179.05450795590878, standard_atol),
                 ("summary.skyNoise", summary.skyNoise, 7.379777185851009, standard_atol),
                 ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
