@@ -70,14 +70,12 @@ class PiplinesCheckTestCase(unittest.TestCase):
         dataId = {"instrument": "HSC", "visit": 903342, "detector": 10}
         collection = "demo_collection"
 
-        cal = self.butler.get("calibrate_metadata", dataId=dataId, collections=collection)
+        cal = self.butler.get("calibrateImage_metadata", dataId=dataId, collections=collection)
         isr = self.butler.get("isr_metadata", dataId=dataId, collections=collection, exposure=903342)
-        charImage = self.butler.get("characterizeImage_metadata", dataId=dataId, collections=collection)
 
         # Confirm only calibrate task uses PropertySet.
         self.assertIsInstance(cal, PropertySet)
         self.assertIsInstance(isr, TaskMetadata)
-        self.assertIsInstance(charImage, TaskMetadata)
 
         # Check that they both have a quantum entry.
         self.assertIn("quantum.startUtc", isr)
