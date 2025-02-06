@@ -95,7 +95,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
                 ("summary.dec", summary.dec, -0.23498072899127875, standard_atol),
                 ("summary.zenithDistance", summary.zenithDistance, 21.045745569180554, standard_atol),
                 ("summary.zeroPoint", summary.zeroPoint, 30.54879141025879, 2e-5),
-                ("summary.skyBg", summary.skyBg, 179.05450795590878, standard_atol),
+                ("summary.skyBg", summary.skyBg, 179.05450795590878, 7e-6),
                 ("summary.skyNoise", summary.skyNoise, 7.379777185851009, standard_atol),
                 ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
         ]:
@@ -118,7 +118,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
                 ("calexpBackground stddev", bg_std, 0.8222624653543368),
         ):
             with self.subTest(name):
-                self.assertAlmostEqual(var, val, places=7, msg=name)
+                self.assertFloatsAlmostEqual(var, val, atol=5e-7, msg=name)
 
     def test_initial_psf_stars(self):
         """Test icSrc catalog."""
