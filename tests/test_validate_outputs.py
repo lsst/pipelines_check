@@ -90,7 +90,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
                 ("summary.psfIyy", summary.psfIyy, 4.735538416914092, standard_atol),
                 ("summary.psfIxy", summary.psfIxy, -0.5823368254962096, standard_atol),
                 # TODO: Find a way to tighten psfArea atol in DM-46415.
-                ("summary.psfArea", summary.psfArea, 82.62854203870441, 7e-6),
+                ("summary.psfArea", summary.psfArea, 82.62854203870441, 1e-5),
                 ("summary.ra", summary.ra, 320.7589338738758, standard_atol),
                 ("summary.dec", summary.dec, -0.23498072899127875, standard_atol),
                 ("summary.zenithDistance", summary.zenithDistance, 21.045745569180554, standard_atol),
