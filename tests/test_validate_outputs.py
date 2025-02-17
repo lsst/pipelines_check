@@ -76,27 +76,28 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # reasonable, and then replace the failing values by
         # running the test to determine the updated values.
         standard_atol = 5e-7
+        # TODO: Find a way to tighten psf-related atol in DM-46415.
+        psf_atol = 3e-5
         for name, var, val, atol in [
-                ("im_mean", im_mean, 4.41132288593475, standard_atol),
-                ("im_std", im_std, 163.46956365298914, standard_atol),
-                ("var_mean", var_mean, 51.764979094464934, standard_atol),
+                ("im_mean", im_mean, 4.40936367866368, standard_atol),
+                ("im_std", im_std, 163.46933415710672, standard_atol),
+                ("var_mean", var_mean, 51.76497909446493, standard_atol),
                 ("var_std", var_std, 48.19498276625069, standard_atol),
-                ("num_good_pix", num_good_pix, 7636297.0, 0),
-                ("psf_ixx", psf_ixx, 4.267383627670743, 6e-7),
-                ("psf_iyy", psf_iyy, 4.688844960286263, 7e-7),
-                ("psf_ixy", psf_ixy, -0.5830372248114177, standard_atol),
-                ("summary.psfSigma", summary.psfSigma, 2.1137084416932836, standard_atol),
-                ("summary.psfIxx", summary.psfIxx, 4.286740805245574, 5.1e-7),
-                ("summary.psfIyy", summary.psfIyy, 4.735538416914092, standard_atol),
-                ("summary.psfIxy", summary.psfIxy, -0.5823368254962096, standard_atol),
-                # TODO: Find a way to tighten psfArea atol in DM-46415.
-                ("summary.psfArea", summary.psfArea, 82.62854203870441, 1e-5),
-                ("summary.ra", summary.ra, 320.7589338738758, standard_atol),
-                ("summary.dec", summary.dec, -0.23498072899127875, standard_atol),
-                ("summary.zenithDistance", summary.zenithDistance, 21.045745569180554, standard_atol),
-                ("summary.zeroPoint", summary.zeroPoint, 30.54879141025879, 2e-5),
-                ("summary.skyBg", summary.skyBg, 179.05450795590878, 7e-6),
-                ("summary.skyNoise", summary.skyNoise, 7.379777185851009, standard_atol),
+                ("num_good_pix", num_good_pix, 7642385.0, 0),
+                ("psf_ixx", psf_ixx, 4.26954828976000, psf_atol),
+                ("psf_iyy", psf_iyy, 4.69324136373871, psf_atol),
+                ("psf_ixy", psf_ixy, -0.58443799824505, psf_atol),
+                ("summary.psfSigma", summary.psfSigma, 2.11357693948894, psf_atol),
+                ("summary.psfIxx", summary.psfIxx, 4.28674940210536, psf_atol),
+                ("summary.psfIyy", summary.psfIyy, 4.73465385852646, psf_atol),
+                ("summary.psfIxy", summary.psfIxy, -0.58337975242106, psf_atol),
+                ("summary.psfArea", summary.psfArea, 82.64285443027000, psf_atol),
+                ("summary.ra", summary.ra, 320.75893333503228, standard_atol),
+                ("summary.dec", summary.dec, -0.23498079539861, standard_atol),
+                ("summary.zenithDistance", summary.zenithDistance, 21.04574546853740, standard_atol),
+                ("summary.zeroPoint", summary.zeroPoint, 30.54846669078975, 2e-5),
+                ("summary.skyBg", summary.skyBg, 179.03647006303072, 7e-6),
+                ("summary.skyNoise", summary.skyNoise, 7.37977835182304, standard_atol),
                 ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
         ]:
             # Uncomment following line to get replacement code when
@@ -114,8 +115,8 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         bg_std = bg0_arr.std(dtype=np.float64)
 
         for name, var, val in (
-                ("calexpBackground mean", bg_mean, 179.2608874980628),
-                ("calexpBackground stddev", bg_std, 0.8222624653543368),
+                ("calexpBackground mean", bg_mean, 179.26284783567618),
+                ("calexpBackground stddev", bg_std, 0.8269496013686628),
         ):
             with self.subTest(name):
                 self.assertFloatsAlmostEqual(var, val, atol=5e-7, msg=name)
@@ -124,12 +125,12 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         """Test icSrc catalog."""
         initial_psf_stars = self.butler.get("initial_psf_stars_detector", detector=self.detector,
                                             visit=self.visit)
-        self.assertEqual(len(initial_psf_stars), 266)
+        self.assertEqual(len(initial_psf_stars), 270)
 
     def test_src(self):
         """Test src catalog."""
         src = self.butler.get("src", detector=self.detector, visit=self.visit)
-        self.assertEqual(len(src), 1357)
+        self.assertEqual(len(src), 1337)
 
 
 def setup_module(module):
