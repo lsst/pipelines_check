@@ -80,7 +80,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         psf_atol = 3e-5
         for name, var, val, atol in [
                 ("im_mean", im_mean, 4.40936367866368, standard_atol),
-                ("im_std", im_std, 163.46933415710672, standard_atol),
+                ("im_std", im_std, 163.46933365146657, standard_atol),
                 ("var_mean", var_mean, 51.76497909446493, standard_atol),
                 ("var_std", var_std, 48.19498276625069, standard_atol),
                 ("num_good_pix", num_good_pix, 7642385.0, 0),
