@@ -174,6 +174,8 @@ test_quantum_butler() {
   echo $output
   zip_path=$(echo $output | grep .zip | awk -F/ {'print $NF'})
   butler ingest-zip DATA_REPO $zip_path
+  # Run twice, first with a dataset type filter.
+  butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp --update-output-chain "$graph_file" DATA_REPO
   butler --log-level=VERBOSE --long-log transfer-from-graph --update-output-chain "$graph_file" DATA_REPO
 }
 
