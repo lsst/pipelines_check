@@ -35,6 +35,7 @@ TESTDIR = os.path.abspath(os.path.dirname(__file__))
 MAIN_CHAIN = "demo_collection"
 EXE_CHAIN = "demo_collection_exe"
 QBB_CHAIN = "demo_collection_qbb"
+EXISTS_CHAIN = "demo_collection_exists"
 
 
 class PiplinesCheckTestCase(unittest.TestCase):
@@ -86,7 +87,7 @@ class PiplinesCheckTestCase(unittest.TestCase):
     def testExecutionButler(self):
         """Check outputs match in both runs."""
 
-        for chain in (EXE_CHAIN, QBB_CHAIN):
+        for chain in (EXE_CHAIN, QBB_CHAIN, EXISTS_CHAIN):
             with self.subTest(chain=chain):
                 # Check that we have identical datasets in both collections
                 # except for the dataset.id
@@ -105,7 +106,7 @@ class PiplinesCheckTestCase(unittest.TestCase):
     def testExecutionExistence(self):
         """Check that the execution butler files are really there."""
 
-        for chain in (EXE_CHAIN, QBB_CHAIN):
+        for chain in (EXE_CHAIN, QBB_CHAIN, EXISTS_CHAIN):
             with self.subTest(chain=chain):
                 datasets = self._get_datasets_from_chain(chain)
                 for ref in datasets:
@@ -121,7 +122,7 @@ class PiplinesCheckTestCase(unittest.TestCase):
 
         # Get the logs from both main and exe/qbb collections.
         main_isr_log = self.butler.get("isr_log", dataId=isr_log_ref.dataId, collections=MAIN_CHAIN)
-        for chain in (EXE_CHAIN, QBB_CHAIN):
+        for chain in (EXE_CHAIN, QBB_CHAIN, EXISTS_CHAIN):
             with self.subTest(chain=chain):
                 isr_log = self.butler.get("isr_log", dataId=isr_log_ref.dataId, collections=chain)
 

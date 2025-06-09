@@ -179,10 +179,41 @@ test_quantum_butler() {
   butler --log-level=VERBOSE --long-log transfer-from-graph --update-output-chain "$graph_file" DATA_REPO
 }
 
+test_transfer_from_graph_exists() {
+  # Test transfer-from-graph with --check-exists flag
+  graph_file="test_qbb_exists.qgraph"
+
+  # This collection name must match that used in the Python tests
+  output_chain="demo_collection_exists"
+  output_run="$output_chain/YYYYMMDD"
+
+  pipetask qgraph -b DATA_REPO/butler.yaml \
+    --input "$incoll" \
+    -p "$pipeline" \
+    -q "$graph_file" \
+    --qgraph-datastore-records \
+    --instrument lsst.obs.subaru.HyperSuprimeCam \
+    --output "$output_chain" \
+    --output-run "$output_run"
+
+  # Run the init step
+  pipetask --long-log pre-exec-init-qbb "DATA_REPO/butler.yaml" "$graph_file"
+
+  # Run the pipeline
+  pipetask --long-log run-qbb -j 2 "DATA_REPO/butler.yaml" "$graph_file"
+
+  # Run twice, first with a dataset type filter.
+  out1=$(butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp --update-output-chain "$graph_file" DATA_REPO 2>&1)
+  echo "$out1"
+  out2=$(butler --log-level=VERBOSE --long-log transfer-from-graph --update-output-chain "$graph_file" DATA_REPO --check-exists 2>&1)
+  echo "$out2"
+}
+
 # Run the execution butler test the same time as the quantum butler test
 test_execution_butler &
 test_quantum_butler &
 wait
+test_transfer_from_graph_exists
 
 # Run some tests on the final butler state.
 pytest tests/
