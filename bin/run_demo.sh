@@ -91,6 +91,11 @@ refresh_butler() {
   cp "$exedir"/* "$1/"
 }
 
+check_transfer_count() {
+  IFS= read -r line;
+  echo $line | awk -v expected=$1 -F ':' '{print $0; if (int($2) != int(expected)) {print "Transfer rest count (" int($2) ") != expected (" int(expected) ")"; exit 1}}' 
+}
+
 test_execution_butler() {
   # Test the execution butler.
   # Create execution butler with new graph and output collection.
@@ -174,9 +179,22 @@ test_quantum_butler() {
   echo $output
   zip_path=$(echo $output | grep .zip | awk -F/ {'print $NF'})
   butler ingest-zip DATA_REPO $zip_path
-  # Run twice, first with a dataset type filter.
-  butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp --update-output-chain "$graph_file" DATA_REPO
-  butler --log-level=VERBOSE --long-log transfer-from-graph --update-output-chain "$graph_file" DATA_REPO
+
+  # Transfer nothing (because calexp already ingested via zip), don't ask to update chain.
+  butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp "$graph_file" DATA_REPO  | check_transfer_count 0
+  python tests/check_update_chain.py DATA_REPO "$output_run" "$output_chain" 0
+
+  # Transfer one, don't ask to update chain.
+  butler --log-level=VERBOSE --long-log transfer-from-graph -d postISRCCD "$graph_file" DATA_REPO | check_transfer_count 1
+  python tests/check_update_chain.py DATA_REPO "$output_run" "$output_chain" 0
+
+  # Transfer nothing (because calexp already ingested via zip), ask to update chain.
+  butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp --update-output-chain "$graph_file" DATA_REPO | check_transfer_count 0
+  python tests/check_update_chain.py DATA_REPO $output_run $output_chain 1
+
+  # Transfer rest (should be 11) and make sure still in chain.
+  butler --log-level=VERBOSE --long-log transfer-from-graph --update-output-chain "$graph_file" DATA_REPO | check_transfer_count 11 
+  python tests/check_update_chain.py DATA_REPO $output_run $output_chain 1
 }
 
 # Run the execution butler test the same time as the quantum butler test
