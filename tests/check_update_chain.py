@@ -27,9 +27,10 @@ from lsst.daf.butler import Butler, MissingCollectionError
 
 
 def check_chain(
-    butler_uri: str, output_run: str, output_chain: str, should_exist: bool
+    butler_uri: str, output_run: str, output_chain: str, run_should_exist: bool
 ) -> bool:
-    """Check whether output run collextion is in the output chain collection.
+    """Check whether output run collection is in the output chain collection
+    and that chain is flattened.
 
     Parameters
     ----------
@@ -39,51 +40,68 @@ def check_chain(
         Output run collection.
     output_chain : `str`
         Output collection (chain).
-    should_exist : `bool`
+    run_should_exist : `bool`
         Whether the output run should exist in the output chain.
     """
     butler = Butler(butler_uri)
-
-    input_collections = {"HSC/calib", "HSC/raw/all", "refcats"}
+    error = False
 
     try:
-        chain_definition = set(butler.registry.getCollectionChain(output_chain))
-        exists = output_run in chain_definition
-        if should_exist and not exists:
-            print(
-                f"ERROR: output run ({output_run}) not in output chain ({output_chain}).",
-                file=sys.stderr,
-            )
-        elif not should_exist and exists:
-            print(
-                f"ERROR: output run ({output_run}) is in output chain ({output_chain}) but shouldn't be.",
-                file=sys.stderr,
-            )
-        exists = input_collections.issubset(chain_definition)
-        if should_exist and not exists:
-            print(
-                f"ERROR: input collections ({input_collections}) not in output chain ({output_chain}).",
-                file=sys.stderr,
-            )
-        elif not should_exist and exists:
-            print(
-                f"ERROR: input collections ({input_collections}) are in output chain ({output_chain}) "
-                " but shouldn't be.",
-                file=sys.stderr,
-            )
+        output_chain_info = butler.collections.query_info(output_chain)
     except MissingCollectionError:
-        if should_exist:
+        if run_should_exist:
             print(
                 f"ERROR: output chain did not exist ({output_chain}))", file=sys.stderr
             )
-        exists = False
+            error = True
+    else:
+        exists = output_run in output_chain_info[0].children
+        if run_should_exist and not exists:
+            print(
+                f"ERROR: output run ({output_run}) is not in output chain "
+                f"({output_chain}={output_chain_info[0].children}).",
+                file=sys.stderr,
+            )
+            error = True
+        elif not run_should_exist and exists:
+            print(
+                f"ERROR: output run ({output_run}) is in output chain "
+                f"({output_chain}={output_chain_info[0].children}) but shouldn't be.",
+                file=sys.stderr,
+            )
+            error = True
 
-    success = exists == bool(int(should_exist))
-    if not success:
-        print("ERROR: checking chain failed.", file=sys.stderr)
-    return success
+        # HSC/defaults is actual input collection, but should be flattened to
+        # these collections.
+        input_collections = {"HSC/calib", "HSC/raw/all", "refcats"}
+        exists = input_collections.issubset(output_chain_info[0].children)
+        if run_should_exist and not exists:
+            print(
+                f"ERROR: input collections ({input_collections}) not in output chain "
+                f"({output_chain}={output_chain_info[0].children}).",
+                file=sys.stderr,
+            )
+            error = True
+        elif not run_should_exist and exists:
+            print(
+                f"ERROR: input collections ({input_collections}) are in output chain "
+                f"({output_chain}={output_chain_info[0].children}) but shouldn't be.",
+                file=sys.stderr,
+            )
+            error = True
+
+        defaults_exists = "HSC/defaults" in output_chain_info[0].children
+        if run_should_exist and defaults_exists:
+            print(
+                f"ERROR: HSC/defaults is in output chain ({output_chain}={output_chain_info[0].children}) "
+                " but shouldn't be due to flattening.",
+                file=sys.stderr,
+            )
+            error = True
+
+    return error
 
 
 if __name__ == "__main__":
-    success = check_chain(sys.argv[1], sys.argv[2], sys.argv[3], bool(int(sys.argv[4])))
-    sys.exit(not success)  # Exit with 0 if success.
+    error = check_chain(sys.argv[1], sys.argv[2], sys.argv[3], bool(int(sys.argv[4])))
+    sys.exit(error)  # Exit with 0 if success.
