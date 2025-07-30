@@ -53,7 +53,10 @@ if [ -z "$(butler query-dataset-types DATA_REPO/ calibrateImage_metadata | grep 
     butler register-dataset-type DATA_REPO calibrateImage_metadata PropertySet band instrument detector physical_filter visit
 fi
 
-incoll="HSC/calib,HSC/raw/all,refcats"
+# Make a chain for inputs to be able to test output chain is flattened.
+butler collection-chain DATA_REPO HSC/defaults HSC/calib,HSC/raw/all,refcats
+
+incoll="HSC/defaults"
 pipeline="${DRP_PIPE_DIR}/pipelines/HSC/pipelines_check.yaml"
 
 # Pipeline execution will fail on second attempt because the output run
