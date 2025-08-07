@@ -99,58 +99,8 @@ check_transfer_count() {
   echo $line | awk -v expected=$1 -F ':' '{print $0; if (int($2) != int(expected)) {print "Transfer rest count (" int($2) ") != expected (" int(expected) ")"; exit 1}}' 
 }
 
-test_execution_butler() {
-  # Test the execution butler.
-  # Create execution butler with new graph and output collection.
-
-  graph_file="test_exe.qgraph"
-  exedir="./execution_butler"
-  # This collection name must match that used in the Python tests.
-  exeoutput="demo_collection_exe"
-  exerun="$exeoutput/YYYYMMDD"
-
-  pipetask qgraph -b DATA_REPO/butler.yaml \
-    --input "$incoll" \
-    -p "$pipeline" \
-    -q "$graph_file" \
-    --save-execution-butler "$exedir" \
-    --clobber-execution-butler \
-    --instrument lsst.obs.subaru.HyperSuprimeCam --output "$exeoutput" --output-run "$exerun"
-
-  # Run the init step
-  TMP_BUTLER="./tmp_execution_butler"
-  refresh_butler $TMP_BUTLER
-  pipetask --long-log run -b "$TMP_BUTLER" -i "$incoll" --output-run "$exerun" --init-only --register-dataset-types --qgraph "$graph_file" --extend-run
-
-  # Run the three quanta sequentially with a refreshed execution butler ever time.
-  for NODE in $(pipetask qgraph -b "$TMP_BUTLER" -g "$graph_file" --show-qgraph-header \
-      |jq -r 'first(.Nodes)[][0]')
-  do
-    TMP_BUTLER_NODE="./tmp_execution_butler-$NODE"
-    refresh_butler $TMP_BUTLER_NODE
-
-    pipetask --long-log run -b "$TMP_BUTLER_NODE" --output-run "$exerun" --qgraph "$graph_file" --qgraph-node-id "$NODE" --skip-init-writes --extend-run --clobber-outputs --skip-existing
-  done
-
-  rm -rf ./tmp_execution_butler-*
-  rm -rf $TMP_BUTLER
-
-  # Bring home the datasets.
-  butler --log-level=VERBOSE --long-log transfer-datasets "$exedir" DATA_REPO --collections "$exerun"
-
-  # Create the collection in the main repo.
-  # Do this by first appending the input collections and then prepending
-  # the output run collection. This way we do not need to check for existence
-  # of a previous chain.
-  # If --replace-run is required an extra line to do --mode=pop should be added.
-  butler collection-chain DATA_REPO --mode=extend "$exeoutput" "$incoll"
-  butler collection-chain DATA_REPO --mode=prepend "$exeoutput" "$exerun"
-}
-
 test_quantum_butler() {
-  # Test Quantum-backed butler, this will be a replacement for execution butler,
-  # but for now we test them both, they should produce identical outputs going
-  # to separate collections.
+  # Test Quantum-backed butler.
 
   graph_file="test_qbb.qgraph"
   # This collection name must match that used in the Python tests
@@ -200,8 +150,6 @@ test_quantum_butler() {
   python tests/check_update_chain.py DATA_REPO $output_run $output_chain 1
 }
 
-# Run the execution butler test the same time as the quantum butler test
-test_execution_butler &
 test_quantum_butler &
 wait
 

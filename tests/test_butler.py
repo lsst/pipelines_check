@@ -33,7 +33,6 @@ TESTDIR = os.path.abspath(os.path.dirname(__file__))
 # These collection names must match those used in the run_demo.sh
 # script.
 MAIN_CHAIN = "demo_collection"
-EXE_CHAIN = "demo_collection_exe"
 QBB_CHAIN = "demo_collection_qbb"
 
 
@@ -83,33 +82,29 @@ class PiplinesCheckTestCase(unittest.TestCase):
         # PropertySet.__contains__ does not support "."
         self.assertIn("quantum.startUtc", cal.names(topLevelOnly=False))
 
-    def testExecutionButler(self):
+    def testQuantumBackedButler(self):
         """Check outputs match in both runs."""
 
-        for chain in (EXE_CHAIN, QBB_CHAIN):
-            with self.subTest(chain=chain):
-                # Check that we have identical datasets in both collections
-                # except for the dataset.id
-                main_datasets = self._get_datasets_from_chain(MAIN_CHAIN)
-                datasets = self._get_datasets_from_chain(chain)
-                self.assertGreater(len(datasets), 0)
-                self.assertEqual(len(main_datasets), len(datasets))
+        # Check that we have identical datasets in both collections
+        # except for the dataset.id
+        main_datasets = self._get_datasets_from_chain(MAIN_CHAIN)
+        datasets = self._get_datasets_from_chain(QBB_CHAIN)
+        self.assertGreater(len(datasets), 0)
+        self.assertEqual(len(main_datasets), len(datasets))
 
-                # Extract dataset type and DataIds for comparison.
-                main_data_ids = {(ref.datasetType, ref.dataId) for ref in main_datasets}
-                data_ids = {(ref.datasetType, ref.dataId) for ref in datasets}
+        # Extract dataset type and DataIds for comparison.
+        main_data_ids = {(ref.datasetType, ref.dataId) for ref in main_datasets}
+        data_ids = {(ref.datasetType, ref.dataId) for ref in datasets}
 
-                difference = main_data_ids - data_ids
-                self.assertEqual(len(difference), 0, "Some datasets missing.")
+        difference = main_data_ids - data_ids
+        self.assertEqual(len(difference), 0, "Some datasets missing.")
 
-    def testExecutionExistence(self):
+    def testQuantumBackedExistence(self):
         """Check that the execution butler files are really there."""
 
-        for chain in (EXE_CHAIN, QBB_CHAIN):
-            with self.subTest(chain=chain):
-                datasets = self._get_datasets_from_chain(chain)
-                for ref in datasets:
-                    self.assertTrue(self.butler.exists(ref))
+        datasets = self._get_datasets_from_chain(QBB_CHAIN)
+        for ref in datasets:
+            self.assertTrue(self.butler.exists(ref))
 
     def testLogDataset(self):
         """Ensure that the logs are captured in both modes."""
@@ -121,17 +116,15 @@ class PiplinesCheckTestCase(unittest.TestCase):
 
         # Get the logs from both main and exe/qbb collections.
         main_isr_log = self.butler.get("isr_log", dataId=isr_log_ref.dataId, collections=MAIN_CHAIN)
-        for chain in (EXE_CHAIN, QBB_CHAIN):
-            with self.subTest(chain=chain):
-                isr_log = self.butler.get("isr_log", dataId=isr_log_ref.dataId, collections=chain)
+        isr_log = self.butler.get("isr_log", dataId=isr_log_ref.dataId, collections=QBB_CHAIN)
 
-                # Timestamps and durations will differ but check to see that
-                # the number of log messages matched.
-                self.assertEqual(
-                    len(main_isr_log),
-                    len(isr_log),
-                    f"Standard log: {main_isr_log}\n vs\nExecution butler log: {isr_log}"
-                )
+        # Timestamps and durations will differ but check to see that
+        # the number of log messages matched.
+        self.assertEqual(
+            len(main_isr_log),
+            len(isr_log),
+            f"Standard log: {main_isr_log}\n vs\nExecution butler log: {isr_log}"
+        )
 
 
 if __name__ == "__main__":
