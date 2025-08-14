@@ -120,8 +120,8 @@ test_quantum_butler() {
   pipetask --long-log pre-exec-init-qbb "DATA_REPO/butler.yaml" "$graph_file"
 
   # Run each pipeline step in turn.
-  for NODE in $(pipetask qgraph -b "DATA_REPO/butler.yaml" -g "$graph_file" --show-qgraph-header \
-      |jq -r 'first(.Nodes)[][0]')
+  for NODE in $(pipetask qgraph -b "DATA_REPO/butler.yaml" -g "$graph_file" --show workflow \
+    | sed -nE 's/^Quantum ([a-z0-9\-]+):.*$/\1/p')
   do
       pipetask --long-log run-qbb -j 2 --qgraph-node-id "$NODE" "DATA_REPO/butler.yaml" "$graph_file"
   done
