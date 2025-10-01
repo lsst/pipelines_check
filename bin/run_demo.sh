@@ -102,7 +102,7 @@ check_transfer_count() {
 test_quantum_butler() {
   # Test Quantum-backed butler.
 
-  graph_file="test_qbb.qgraph"
+  graph_file="test_qbb.qg"
   # This collection name must match that used in the Python tests
   output_chain="demo_collection_qbb"
   output_run="$output_chain/YYYYMMDD"
