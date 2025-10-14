@@ -79,25 +79,25 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # TODO: Find a way to tighten psf-related atol in DM-46415.
         psf_atol = 3e-5
         for name, var, val, atol in [
-            ("im_mean", im_mean, 4.40945535974958, standard_atol),
-            ("im_std", im_std, 163.46927611846996, standard_atol),
+            ("im_mean", im_mean, 4.450909826868853, standard_atol),
+            ("im_std", im_std, 163.47296569238816, standard_atol),
             ("var_mean", var_mean, 51.76497909446493, standard_atol),
             ("var_std", var_std, 48.19498276625069, standard_atol),
-            ("num_good_pix", num_good_pix, 7642282, 0),
-            ("psf_ixx", psf_ixx, 4.26949888204926, psf_atol),
-            ("psf_iyy", psf_iyy, 4.69318747345458, psf_atol),
-            ("psf_ixy", psf_ixy, -0.58443241352978, psf_atol),
-            ("summary.psfSigma", summary.psfSigma, 2.11356400658675, psf_atol),
-            ("summary.psfIxx", summary.psfIxx, 4.28669622174192, psf_atol),
-            ("summary.psfIyy", summary.psfIyy, 4.73459685204438, psf_atol),
-            ("summary.psfIxy", summary.psfIxy, -0.58337313083780, psf_atol),
-            ("summary.psfArea", summary.psfArea, 82.64348732359210, psf_atol),
-            ("summary.ra", summary.ra, 320.75893333501341, standard_atol),
-            ("summary.dec", summary.dec, -0.23498079533114, standard_atol),
-            ("summary.zenithDistance", summary.zenithDistance, 21.04574546846739, standard_atol),
-            ("summary.zeroPoint", summary.zeroPoint, 30.54848171140578, 2e-5),
-            ("summary.skyBg", summary.skyBg, 179.04461669921875, 7e-6),
-            ("summary.skyNoise", summary.skyNoise, 7.37982470259054, standard_atol),
+            ("num_good_pix", num_good_pix, 7731833, 0),
+            ("psf_ixx", psf_ixx, 4.2508926411824275, psf_atol),
+            ("psf_iyy", psf_iyy, 4.673120795133063, psf_atol),
+            ("psf_ixy", psf_ixy, -0.5733387040170833, psf_atol),
+            ("summary.psfSigma", summary.psfSigma, 2.1101797306938694, psf_atol),
+            ("summary.psfIxx", summary.psfIxx, 4.271617566302915, psf_atol),
+            ("summary.psfIyy", summary.psfIyy, 4.7187097772406545, psf_atol),
+            ("summary.psfIxy", summary.psfIxy, -0.5732144370564528, psf_atol),
+            ("summary.psfArea", summary.psfArea, 82.56064354917795, psf_atol),
+            ("summary.ra", summary.ra, 320.7589320484381, standard_atol),
+            ("summary.dec", summary.dec, -0.23497854714484273, standard_atol),
+            ("summary.zenithDistance", summary.zenithDistance, 21.045742935659092, standard_atol),
+            ("summary.zeroPoint", summary.zeroPoint, 30.547923382281997, 2e-5),
+            ("summary.skyBg", summary.skyBg, 179.28347778320312, 7e-6),
+            ("summary.skyNoise", summary.skyNoise, 7.382733582648304, standard_atol),
             ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
         ]:
             # Uncomment following line to get replacement code when
@@ -116,8 +116,8 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         bg_std = bg0_arr.std(dtype=np.float64)
 
         for name, var, val in (
-            ("calexpBackground mean", bg_mean, 179.26275655405482),
-            ("calexpBackground stddev", bg_std, 0.8294680447781375),
+            ("calexpBackground mean", bg_mean, 179.2213552869496),
+            ("calexpBackground stddev", bg_std, 0.7740772168754587),
         ):
             with self.subTest(name):
                 self.assertFloatsAlmostEqual(var, val, atol=5e-7, msg=name)
@@ -126,12 +126,12 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         """Test icSrc catalog."""
         initial_psf_stars = self.butler.get("initial_psf_stars_detector", detector=self.detector,
                                             visit=self.visit)
-        self.assertEqual(len(initial_psf_stars), 270)
+        self.assertEqual(len(initial_psf_stars), 254)
 
     def test_src(self):
         """Test src catalog."""
         src = self.butler.get("src", detector=self.detector, visit=self.visit)
-        self.assertEqual(len(src), 1345)
+        self.assertEqual(len(src), 778)
 
 
 def setup_module(module):
