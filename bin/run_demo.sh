@@ -150,8 +150,7 @@ test_quantum_butler() {
   python tests/check_update_chain.py DATA_REPO $output_run $output_chain 1
 }
 
-test_quantum_butler &
-wait
+test_quantum_butler
 
 # Run some tests on the final butler state.
 pytest tests/
