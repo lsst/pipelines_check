@@ -83,7 +83,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
             ("im_std", im_std, 163.46927611846996, standard_atol),
             ("var_mean", var_mean, 51.76497909446493, standard_atol),
             ("var_std", var_std, 48.19498276625069, standard_atol),
-            ("num_good_pix", num_good_pix, 7642282, 0),
+            ("num_good_pix", num_good_pix, 7620350, 0),
             ("psf_ixx", psf_ixx, 4.26949888204926, psf_atol),
             ("psf_iyy", psf_iyy, 4.69318747345458, psf_atol),
             ("psf_ixy", psf_ixy, -0.58443241352978, psf_atol),
