@@ -7,5 +7,6 @@ REPO_ROOT = os.path.abspath("DATA_REPO")
 run_demo = env.Command(os.path.join(REPO_ROOT, "shared", "ci_hsc_output"), None,
                        ["bin/run_demo.sh"])
 
+env.Depends(run_demo, "bin")
 env.Alias("all", run_demo)
 Default(run_demo)
