@@ -94,11 +94,6 @@ refresh_butler() {
   cp "$exedir"/* "$1/"
 }
 
-check_transfer_count() {
-  IFS= read -r line;
-  echo $line | awk -v expected=$1 -F ':' '{print $0; if (int($2) != int(expected)) {print "Transfer rest count (" int($2) ") != expected (" int(expected) ")"; exit 1}}' 
-}
-
 test_quantum_butler() {
   # Test Quantum-backed butler.
 
@@ -134,24 +129,25 @@ test_quantum_butler() {
   butler ingest-zip DATA_REPO $zip_path
 
   # Transfer nothing (because calexp already ingested via zip), don't ask to update chain.
-  butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp "$graph_file" DATA_REPO  | check_transfer_count 0
+  butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp "$graph_file" DATA_REPO  | bin/check_transfer_count.py 0
   python tests/check_update_chain.py DATA_REPO "$output_run" "$output_chain" 0
 
   # Transfer one, don't ask to update chain.
-  butler --log-level=VERBOSE --long-log transfer-from-graph -d postISRCCD "$graph_file" DATA_REPO | check_transfer_count 1
+  butler --log-level=VERBOSE --long-log transfer-from-graph -d postISRCCD "$graph_file" DATA_REPO | bin/check_transfer_count.py 1
   python tests/check_update_chain.py DATA_REPO "$output_run" "$output_chain" 0
 
   # Transfer nothing (because calexp already ingested via zip), ask to update chain.
-  butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp --update-output-chain "$graph_file" DATA_REPO | check_transfer_count 0
+  butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp --update-output-chain "$graph_file" DATA_REPO | bin/check_transfer_count.py 0
   python tests/check_update_chain.py DATA_REPO $output_run $output_chain 1
 
-  # Transfer rest (should be 11) and make sure still in chain.
-  butler --log-level=VERBOSE --long-log transfer-from-graph --update-output-chain "$graph_file" DATA_REPO | check_transfer_count 11 
+  # Transfer rest (should be 11) and make sure still in chain.  We use the new
+  # aggregate-graph command for just this step, since it doesn't support
+  # ingesting only certain dataset types.
+  butler --log-level=VERBOSE --long-log aggregate-graph --update-output-chain "$graph_file" DATA_REPO 2>&1 | bin/check_transfer_count.py 11 --aggregate-graph
   python tests/check_update_chain.py DATA_REPO $output_run $output_chain 1
 }
 
-test_quantum_butler &
-wait
+test_quantum_butler
 
 # Run some tests on the final butler state.
 pytest tests/
