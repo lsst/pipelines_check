@@ -140,10 +140,10 @@ test_quantum_butler() {
   butler --log-level=VERBOSE --long-log transfer-from-graph -d calexp --update-output-chain "$graph_file" DATA_REPO | bin/check_transfer_count.py 0
   python tests/check_update_chain.py DATA_REPO $output_run $output_chain 1
 
-  # Transfer rest (should be 11) and make sure still in chain.  We use the new
+  # Transfer rest (should be 12) and make sure still in chain.  We use the new
   # aggregate-graph command for just this step, since it doesn't support
   # ingesting only certain dataset types.
-  butler --log-level=VERBOSE --long-log aggregate-graph --update-output-chain "$graph_file" DATA_REPO 2>&1 | bin/check_transfer_count.py 11 --aggregate-graph
+  butler --log-level=VERBOSE --long-log aggregate-graph --update-output-chain "$graph_file" DATA_REPO 2>&1 | bin/check_transfer_count.py 12 --aggregate-graph
   python tests/check_update_chain.py DATA_REPO $output_run $output_chain 1
 }
 
