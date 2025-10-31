@@ -4,3 +4,10 @@ registry:
 datastore:
   composites:
     default: true
+    disassembled:
+      calexp: false
+  formatters:
+    calexp:
+      formatter: lsst.obs.base.formatters.fitsExposure.FitsExposureFormatter
+      parameters:
+        recipe: lossyBasic
