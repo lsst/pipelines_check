@@ -79,11 +79,11 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # TODO: Find a way to tighten psf-related atol in DM-46415.
         psf_atol = 3e-5
         for name, var, val, atol in [
-            ("im_mean", im_mean, 4.497420608809509, standard_atol),
-            ("im_std", im_std, 163.47305431783107, standard_atol),
+            ("im_mean", im_mean, 4.45269697581625, standard_atol),
+            ("im_std", im_std, 163.47350818645234, standard_atol),
             ("var_mean", var_mean, 51.76494665879407, standard_atol),
             ("var_std", var_std, 48.19509860934283, standard_atol),
-            ("num_good_pix", num_good_pix, 7727997, 0),
+            ("num_good_pix", num_good_pix, 7731814, 0),
             ("psf_ixx", psf_ixx, 4.25089264118243, psf_atol),
             ("psf_iyy", psf_iyy, 4.67312079513306, psf_atol),
             ("psf_ixy", psf_ixy, -0.57333870401708, psf_atol),
@@ -96,8 +96,8 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
             ("summary.dec", summary.dec, -0.23497854714484, standard_atol),
             ("summary.zenithDistance", summary.zenithDistance, 21.04574293565909, standard_atol),
             ("summary.zeroPoint", summary.zeroPoint, 30.54791820137500, 2e-5),
-            ("summary.skyBg", summary.skyBg, 179.21276855468750, 7e-6),
-            ("summary.skyNoise", summary.skyNoise, 7.38273358572485, standard_atol),
+            ("summary.skyBg", summary.skyBg, 179.21673583984375, 7e-6),
+            ("summary.skyNoise", summary.skyNoise, 7.38146939102471, standard_atol),
             ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
         ]:
             # Uncomment following line to get replacement code when
@@ -116,8 +116,8 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         bg_std = bg0_arr.std(dtype=np.float64)
 
         for name, var, val in (
-            ("calexpBackground mean", bg_mean, 179.17480072151992),
-            ("calexpBackground stddev", bg_std, 0.77407721687546),
+            ("calexpBackground mean", bg_mean, 179.21962480422044),
+            ("calexpBackground stddev", bg_std, 0.7532147347608282),
         ):
             with self.subTest(name):
                 self.assertFloatsAlmostEqual(var, val, atol=5e-7, msg=name)
@@ -131,7 +131,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
     def test_src(self):
         """Test src catalog."""
         src = self.butler.get("src", detector=self.detector, visit=self.visit)
-        self.assertEqual(len(src), 782)
+        self.assertEqual(len(src), 784)
 
 
 def setup_module(module):
