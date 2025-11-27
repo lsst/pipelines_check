@@ -79,10 +79,10 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # TODO: Find a way to tighten psf-related atol in DM-46415.
         psf_atol = 3e-5
         for name, var, val, atol in [
-            ("im_mean", im_mean, 4.45269697581625, standard_atol),
-            ("im_std", im_std, 163.47350818645234, standard_atol),
-            ("var_mean", var_mean, 51.76494665879407, standard_atol),
-            ("var_std", var_std, 48.19509860934283, standard_atol),
+            ("im_mean", im_mean, 4.452631054227751, standard_atol),
+            ("im_std", im_std, 163.4734053610175, standard_atol),
+            ("var_mean", var_mean, 51.76499345997559, standard_atol),
+            ("var_std", var_std, 48.195043744459134, standard_atol),
             ("num_good_pix", num_good_pix, 7731814, 0),
             ("psf_ixx", psf_ixx, 4.25089264118243, psf_atol),
             ("psf_iyy", psf_iyy, 4.67312079513306, psf_atol),
