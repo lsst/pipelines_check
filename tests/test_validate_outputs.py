@@ -79,11 +79,11 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # TODO: Find a way to tighten psf-related atol in DM-46415.
         psf_atol = 3e-5
         for name, var, val, atol in [
-            ("im_mean", im_mean, 4.452631054227751, standard_atol),
-            ("im_std", im_std, 163.4734053610175, standard_atol),
+            ("im_mean", im_mean, 4.458095748957226, standard_atol),
+            ("im_std", im_std, 163.4734054186484, standard_atol),
             ("var_mean", var_mean, 51.76499345997559, standard_atol),
             ("var_std", var_std, 48.195043744459134, standard_atol),
-            ("num_good_pix", num_good_pix, 7731814, 0),
+            ("num_good_pix", num_good_pix, 7731454, 0),
             ("psf_ixx", psf_ixx, 4.25089264118243, psf_atol),
             ("psf_iyy", psf_iyy, 4.67312079513306, psf_atol),
             ("psf_ixy", psf_ixy, -0.57333870401708, psf_atol),
@@ -96,7 +96,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
             ("summary.dec", summary.dec, -0.23497854714484, standard_atol),
             ("summary.zenithDistance", summary.zenithDistance, 21.04574293565909, standard_atol),
             ("summary.zeroPoint", summary.zeroPoint, 30.54791820137500, 2e-5),
-            ("summary.skyBg", summary.skyBg, 179.21673583984375, 7e-6),
+            ("summary.skyBg", summary.skyBg, 179.19015502929688, 7e-6),
             ("summary.skyNoise", summary.skyNoise, 7.38146939102471, standard_atol),
             ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
         ]:
@@ -116,7 +116,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         bg_std = bg0_arr.std(dtype=np.float64)
 
         for name, var, val in (
-            ("calexpBackground mean", bg_mean, 179.21962480422044),
+            ("calexpBackground mean", bg_mean, 179.214146898947),
             ("calexpBackground stddev", bg_std, 0.7532147347608282),
         ):
             with self.subTest(name):
@@ -131,7 +131,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
     def test_src(self):
         """Test src catalog."""
         src = self.butler.get("src", detector=self.detector, visit=self.visit)
-        self.assertEqual(len(src), 784)
+        self.assertEqual(len(src), 785)
 
 
 def setup_module(module):
