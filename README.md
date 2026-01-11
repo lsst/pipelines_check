@@ -9,8 +9,9 @@ Its main purpose is to check that the pipeline infrastructure is working correct
 To run the example, from the `pipelines_check` root directory do:
 
 ```
-$ source $LSST_HOME/loadLSST.sh
-$ setup -r .
+$ source $LSST_HOME/loadLSST.bash
+$ setup lsst_distrib
+$ setup -j -r .
 $ ./bin/run_demo.sh
 ```
 
