@@ -57,10 +57,11 @@ fi
 butler collection-chain DATA_REPO HSC/defaults HSC/calib,HSC/raw/all,refcats
 
 incoll="HSC/defaults"
-pipeline="${DRP_PIPE_DIR}/pipelines/HSC/pipelines_check.yaml"
+# Resolve the drp_pipe pipeline via the importable package so this works both
+# with an EUPS setup (resources/pipelines is a symlink to the repo's pipelines/)
+# and with an eups-less baked env (resources/pipelines copied into site-packages).
+pipeline="resource://lsst.drp.pipe/resources/pipelines/HSC/pipelines_check.yaml"
 
-# Pipeline execution will fail on second attempt because the output run
-# can not be the same.
 # Do not specify a number of processors (-j) to test that the default value
 # works.
 # The output collection name must match that used in the Python tests.
