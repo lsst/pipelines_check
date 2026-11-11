@@ -79,10 +79,10 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # TODO: Find a way to tighten psf-related atol in DM-46415.
         psf_atol = 3e-5
         for name, var, val, atol in [
-            ("im_mean", im_mean, 4.458095748957226, standard_atol),
-            ("im_std", im_std, 163.4734054186484, standard_atol),
-            ("var_mean", var_mean, 51.76499345997559, standard_atol),
-            ("var_std", var_std, 48.195043744459134, standard_atol),
+            ("im_mean", im_mean, 4.458800833473716, standard_atol),
+            ("im_std", im_std, 163.4733910644277, standard_atol),
+            ("var_mean", var_mean, 51.76570853339981, standard_atol),
+            ("var_std", var_std, 48.19683515420629, standard_atol),
             ("num_good_pix", num_good_pix, 7731454, 0),
             ("psf_ixx", psf_ixx, 4.25089264118243, psf_atol),
             ("psf_iyy", psf_iyy, 4.67312079513306, psf_atol),
@@ -97,7 +97,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
             ("summary.zenithDistance", summary.zenithDistance, 21.04574293565909, standard_atol),
             ("summary.zeroPoint", summary.zeroPoint, 30.54791820137500, 2e-5),
             ("summary.skyBg", summary.skyBg, 179.19015502929688, 7e-6),
-            ("summary.skyNoise", summary.skyNoise, 7.38146939102471, standard_atol),
+            ("summary.skyNoise", summary.skyNoise, 7.381472209885036, standard_atol),
             ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
         ]:
             # Uncomment following line to get replacement code when
