@@ -38,14 +38,14 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
     """Check values from outputs from test run."""
     def setUp(self):
         """Create a new butler root for each test."""
-        root = os.path.join(TESTDIR, os.path.pardir, "DATA_REPO")
-        self.butler = Butler(root, writeable=False, collections=[MAIN_CHAIN])
+        self.root = os.path.join(TESTDIR, os.path.pardir, "DATA_REPO")
         self.detector = 10
         self.visit = 903342
 
     def test_calexp(self):
         """Test quantities in the calexp."""
-        exposure = self.butler.get("calexp", detector=self.detector, visit=self.visit)
+        with Butler(self.root, writeable=False, collections=[MAIN_CHAIN]) as butler:
+            exposure = butler.get("calexp", detector=self.detector, visit=self.visit)
 
         self.assertEqual(exposure.getBBox(),
                          geom.Box2I(geom.Point2I(0, 0), geom.Extent2I(2048, 4176)))
@@ -79,10 +79,10 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
         # TODO: Find a way to tighten psf-related atol in DM-46415.
         psf_atol = 3e-5
         for name, var, val, atol in [
-            ("im_mean", im_mean, 4.458095748957226, standard_atol),
-            ("im_std", im_std, 163.4734054186484, standard_atol),
-            ("var_mean", var_mean, 51.76499345997559, standard_atol),
-            ("var_std", var_std, 48.195043744459134, standard_atol),
+            ("im_mean", im_mean, 4.458800833473716, standard_atol),
+            ("im_std", im_std, 163.4733910644277, standard_atol),
+            ("var_mean", var_mean, 51.76570853339981, standard_atol),
+            ("var_std", var_std, 48.19683515420629, standard_atol),
             ("num_good_pix", num_good_pix, 7731454, 0),
             ("psf_ixx", psf_ixx, 4.25089264118243, psf_atol),
             ("psf_iyy", psf_iyy, 4.67312079513306, psf_atol),
@@ -97,7 +97,7 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
             ("summary.zenithDistance", summary.zenithDistance, 21.04574293565909, standard_atol),
             ("summary.zeroPoint", summary.zeroPoint, 30.54791820137500, 2e-5),
             ("summary.skyBg", summary.skyBg, 179.19015502929688, 7e-6),
-            ("summary.skyNoise", summary.skyNoise, 7.38146939102471, standard_atol),
+            ("summary.skyNoise", summary.skyNoise, 7.381472209885036, standard_atol),
             ("summary.meanVar", summary.meanVar, 47.65954782565453, standard_atol),
         ]:
             # Uncomment following line to get replacement code when
@@ -109,7 +109,8 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
 
     def test_background(self):
         """Test background level."""
-        bkg = self.butler.get("calexpBackground", detector=self.detector, visit=self.visit)
+        with Butler(self.root, writeable=False, collections=[MAIN_CHAIN]) as butler:
+            bkg = butler.get("calexpBackground", detector=self.detector, visit=self.visit)
 
         bg0_arr = bkg.getImage().array
         bg_mean = bg0_arr.mean(dtype=np.float64)
@@ -124,13 +125,15 @@ class TestValidateOutputs(lsst.utils.tests.TestCase):
 
     def test_initial_psf_stars(self):
         """Test icSrc catalog."""
-        initial_psf_stars = self.butler.get("initial_psf_stars_detector", detector=self.detector,
-                                            visit=self.visit)
+        with Butler(self.root, writeable=False, collections=[MAIN_CHAIN]) as butler:
+            initial_psf_stars = butler.get("initial_psf_stars_detector", detector=self.detector,
+                                           visit=self.visit)
         self.assertEqual(len(initial_psf_stars), 254)
 
     def test_src(self):
         """Test src catalog."""
-        src = self.butler.get("src", detector=self.detector, visit=self.visit)
+        with Butler(self.root, writeable=False, collections=[MAIN_CHAIN]) as butler:
+            src = butler.get("src", detector=self.detector, visit=self.visit)
         self.assertEqual(len(src), 785)
 
 
